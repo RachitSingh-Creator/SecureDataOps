@@ -1,0 +1,112 @@
+{
+  "widgets": [
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 0,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "ECS CPU Utilization",
+        "view": "timeSeries",
+        "region": "us-east-1",
+        "period": 300,
+        "stat": "Average",
+        "metrics": [
+          [ "AWS/ECS", "CPUUtilization", "ClusterName", "securedataops-cluster1", "ServiceName", "securedataops-backend-service", { "label": "Backend CPU" } ],
+          [ ".", ".", ".", ".", ".", "securedataops-frontend-service", { "label": "Frontend CPU" } ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 0,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "ECS Memory Utilization",
+        "view": "timeSeries",
+        "region": "us-east-1",
+        "period": 300,
+        "stat": "Average",
+        "metrics": [
+          [ "AWS/ECS", "MemoryUtilization", "ClusterName", "securedataops-cluster1", "ServiceName", "securedataops-backend-service", { "label": "Backend Memory" } ],
+          [ ".", ".", ".", ".", ".", "securedataops-frontend-service", { "label": "Frontend Memory" } ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 6,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "ALB Request Count",
+        "view": "timeSeries",
+        "region": "us-east-1",
+        "period": 300,
+        "stat": "Sum",
+        "metrics": [
+          [ "AWS/ApplicationELB", "RequestCount", "LoadBalancer", "app/securedataops-alb/a1b68a761929383a", { "label": "Backend ALB" } ],
+          [ ".", ".", ".", "app/securedataops-frontend-alb/1878f581ff2a2584", { "label": "Frontend ALB" } ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 6,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "ALB 5xx Errors",
+        "view": "timeSeries",
+        "region": "us-east-1",
+        "period": 300,
+        "stat": "Sum",
+        "metrics": [
+          [ "AWS/ApplicationELB", "HTTPCode_Target_5XX_Count", "LoadBalancer", "app/securedataops-alb/a1b68a761929383a", { "label": "Backend 5xx" } ],
+          [ ".", ".", ".", "app/securedataops-frontend-alb/1878f581ff2a2584", { "label": "Frontend 5xx" } ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 12,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Target Response Time",
+        "view": "timeSeries",
+        "region": "us-east-1",
+        "period": 300,
+        "stat": "Average",
+        "metrics": [
+          [ "AWS/ApplicationELB", "TargetResponseTime", "LoadBalancer", "app/securedataops-alb/a1b68a761929383a", { "label": "Backend Latency" } ],
+          [ ".", ".", ".", "app/securedataops-frontend-alb/1878f581ff2a2584", { "label": "Frontend Latency" } ]
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 12,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Unhealthy Targets",
+        "view": "timeSeries",
+        "region": "us-east-1",
+        "period": 60,
+        "stat": "Maximum",
+        "metrics": [
+          [ "AWS/ApplicationELB", "UnHealthyHostCount", "TargetGroup", "targetgroup/securedataops-backend-tg/781ee1c7b999a392", "LoadBalancer", "app/securedataops-alb/a1b68a761929383a", { "label": "Backend Unhealthy" } ],
+          [ ".", ".", "TargetGroup", "targetgroup/securedataops-frontend-tg/ea06673b44f7c95a", "LoadBalancer", "app/securedataops-frontend-alb/1878f581ff2a2584", { "label": "Frontend Unhealthy" } ]
+        ]
+      }
+    }
+  ]
+}
