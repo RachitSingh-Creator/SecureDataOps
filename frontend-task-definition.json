@@ -27,6 +27,14 @@
         "retries": 3,
         "startPeriod": 10
       },
+      "linuxParameters": {
+        "capabilities": {
+          "drop": [
+            "ALL"
+          ]
+        },
+        "initProcessEnabled": true
+      },
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
