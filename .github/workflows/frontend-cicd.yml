@@ -21,7 +21,7 @@ env:
   ECS_SERVICE: securedataops-frontend-service
   CONTAINER_NAME: securedataops-frontend
   TASK_DEFINITION: frontend-task-definition.json
-  VITE_API_BASE_URL: http://securedataops-alb-1775982411.us-east-1.elb.amazonaws.com
+  VITE_API_BASE_URL: ${{ vars.FRONTEND_API_BASE_URL }}
 
 jobs:
   deploy:
