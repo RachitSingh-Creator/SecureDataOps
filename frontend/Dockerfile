@@ -1,5 +1,7 @@
 FROM node:22-alpine AS build
 
+RUN apk update && apk upgrade --no-cache
+
 WORKDIR /app
 
 COPY package*.json ./
@@ -13,9 +15,13 @@ RUN npm run build
 FROM nginxinc/nginx-unprivileged:1.27-alpine
 
 USER root
-RUN rm -f /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+
+RUN apk update && apk upgrade --no-cache \
+    && rm -f /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html
+
 USER 101
 
 EXPOSE 8080
