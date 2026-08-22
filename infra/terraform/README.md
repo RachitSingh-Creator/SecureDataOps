@@ -1,9 +1,11 @@
 # SecureDataOps Terraform migration scaffold
 
 This directory starts an IaC migration for the existing `us-east-1`
-SecureDataOps production environment. It is intentionally **read-only**:
-there are no `resource` blocks, no remote state backend, no credentials, no
-database connection string, and no task-definition image tag managed here.
+SecureDataOps production environment. It contains import-ready resource blocks
+for only the safest existing components: the backend and frontend ECR
+repositories, backend ALB and target group, its listener, ECS cluster, and ECS
+task execution role. It has no remote state backend, credentials, database
+connection string, or task-definition image tag.
 
 The configuration uses AWS data sources for the existing VPC, subnets, backend
 ALB/target group, ECS cluster, ECR repositories, and ECS execution role. The
@@ -18,30 +20,60 @@ building, tagging, rendering, and deploying container images.
 1. Install a compatible Terraform CLI and authenticate the AWS CLI/provider
    with read-only access to the existing environment.
 2. From this directory, run `terraform init` and then `terraform fmt -check`.
-3. Run `terraform validate` and a read-only review with
-   `terraform plan -refresh-only`. Confirm that the discovered VPC includes
-   the expected four existing subnets and that all data-source identities
-   match the environment.
-4. Do **not** run `terraform apply` in this initial phase. Data sources do not
-   require import and this scaffold must not create, replace, or alter AWS
-   resources.
+3. Identify the listener without assuming its port or position, then set the
+   verified ARN for this shell before running a plan:
 
-## Managing existing resources later
+   ```powershell
+   aws elbv2 describe-listeners --load-balancer-arn arn:aws:elasticloadbalancing:us-east-1:011582457592:loadbalancer/app/securedataops-alb/a1b68a761929383a --region us-east-1 --query "Listeners[].{Arn:ListenerArn,Port:Port,Protocol:Protocol,DefaultActions:DefaultActions}" --output table
+   $ListenerArn = "<verified listener ARN from the output>"
+   ```
 
-When a future change adds a matching Terraform `resource` block for an
-already-existing AWS object, import that object into the chosen remote state
-**before any normal plan or apply**:
+4. Run `terraform validate` and `terraform plan -var "backend_listener_arn=$ListenerArn"`.
+   Before importing, the plan will propose creates; it is a review only and
+   must never be applied.
+5. Do **not** run `terraform apply`. The resource blocks describe objects that
+   already exist and are protected with `prevent_destroy`.
+
+## Manual import order
+
+After confirming live AWS values with read-only credentials, import these
+existing objects into the chosen state in this exact order. Run a normal
+`terraform plan` after each command and proceed only when it shows no proposed
+infrastructure changes.
 
 ```powershell
-terraform import <resource-address> <existing-aws-id>
-terraform plan
+# 1. ECR repositories (repository name is the import ID)
+terraform import aws_ecr_repository.backend securedataops-backend
+terraform plan -var "backend_listener_arn=$ListenerArn"
+terraform import aws_ecr_repository.frontend securedatops-frontend
+terraform plan -var "backend_listener_arn=$ListenerArn"
+
+# 2. Backend target group (its ARN is the import ID)
+terraform import aws_lb_target_group.backend arn:aws:elasticloadbalancing:us-east-1:011582457592:targetgroup/securedataops-backend-tg/781ee1c7b999a392
+terraform plan -var "backend_listener_arn=$ListenerArn"
+
+# 3. Backend ALB (its ARN is the import ID)
+terraform import aws_lb.backend arn:aws:elasticloadbalancing:us-east-1:011582457592:loadbalancer/app/securedataops-alb/a1b68a761929383a
+terraform plan -var "backend_listener_arn=$ListenerArn"
+
+# 4. Backend listener (use the verified $ListenerArn from the preceding inventory command)
+terraform import aws_lb_listener.backend $ListenerArn
+terraform plan -var "backend_listener_arn=$ListenerArn"
+
+# 5. ECS cluster (cluster name is the import ID)
+terraform import aws_ecs_cluster.securedataops securedataops-cluster1
+terraform plan -var "backend_listener_arn=$ListenerArn"
+
+# 6. ECS execution role (role name is the import ID)
+terraform import aws_iam_role.ecs_execution ecsTaskExecutionRole
+terraform plan -var "backend_listener_arn=$ListenerArn"
 ```
 
-Review the plan for zero unintended replacements or changes before approving
-an apply. Import one resource class at a time, starting with non-disruptive
-inventory such as ECR or CloudWatch configuration. Do not import or manage an
-ECS task definition until the CI/CD image-tag ownership and deployment flow
-have been deliberately migrated.
+Do not automatically import any of these resources. The listener command is a
+read-only lookup but must be reviewed for a single, intended listener before
+the import. Do not import or manage ECS task definitions, ECS services, RDS,
+VPC/networking, secrets, or CI/CD until their separate reconciliation is
+complete.
 
 ## Inputs and state safety
 

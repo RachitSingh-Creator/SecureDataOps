@@ -28,6 +28,11 @@ variable "backend_target_group_name" {
   default     = "securedataops-backend-tg"
 }
 
+variable "backend_listener_arn" {
+  description = "Verified ARN of the existing listener on the backend ALB; intentionally has no default."
+  type        = string
+}
+
 variable "ecs_cluster_name" {
   description = "Existing ECS Fargate cluster name."
   type        = string
