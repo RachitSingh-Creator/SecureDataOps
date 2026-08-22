@@ -46,6 +46,15 @@ jobs:
         with:
           terraform_version: 1.15.9
 
+      # TEMPORARY: Remove after GitHub OIDC troubleshooting is complete.
+      - name: Temporary OIDC environment diagnostic
+        run: |
+          test -n "${ACTIONS_ID_TOKEN_REQUEST_URL:-}" || { echo "::error::ACTIONS_ID_TOKEN_REQUEST_URL is unavailable."; exit 1; }
+          test -n "${ACTIONS_ID_TOKEN_REQUEST_TOKEN:-}" || { echo "::error::ACTIONS_ID_TOKEN_REQUEST_TOKEN is unavailable."; exit 1; }
+          echo "ACTIONS_ID_TOKEN_REQUEST_URL=$ACTIONS_ID_TOKEN_REQUEST_URL"
+          echo "ACTIONS_ID_TOKEN_REQUEST_TOKEN=available (value redacted)"
+          echo "AWS_STS_OIDC_AUDIENCE=sts.amazonaws.com"
+
       - name: Configure AWS credentials with OIDC
         uses: aws-actions/configure-aws-credentials@v5
         with:
