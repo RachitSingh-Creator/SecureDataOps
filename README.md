@@ -34,7 +34,7 @@ FastAPI
 PostgreSQL
 ```
 
-Docker Compose runs the frontend, backend, and PostgreSQL database locally. The frontend serves the React app through nginx and proxies API requests to the backend service. The backend reads configuration from environment variables and connects to PostgreSQL through the Compose service name `db`.
+Docker Compose runs the frontend, backend, and PostgreSQL database locally. Each image is independently runnable: the browser-facing frontend receives its API address at build time, and the backend receives its database connection string at runtime.
 
 ## Technology Stack
 
@@ -125,10 +125,10 @@ The frontend is available at:
 http://localhost:5173
 ```
 
-The backend API remains available at:
+The API is available directly at:
 
 ```text
-http://localhost:8000
+http://localhost:8000/api/v1/users
 ```
 
 Run the database migration:
@@ -160,7 +160,7 @@ npm install
 npm run dev
 ```
 
-If `VITE_API_BASE_URL` is empty, the frontend uses same-origin API requests. In Docker, nginx proxies those requests to the backend. For a standalone local frontend pointed at the published backend port, set:
+`VITE_API_BASE_URL` is baked into the frontend image during its build. For local development, point it to the separately running backend:
 
 ```text
 VITE_API_BASE_URL=http://localhost:8000
@@ -209,6 +209,22 @@ docker compose exec backend alembic revision --autogenerate -m "describe change"
 ```
 
 Schema changes should be represented through Alembic migrations instead of manual table creation.
+
+## AWS / RDS Deployment Configuration
+
+The repository includes `production.env.example` and `docker-compose.production.yml` as an AWS-ready reference topology. Production Compose deliberately has no database container: supply `DATABASE_URL` with the RDS endpoint and credentials, preferably injected from AWS Secrets Manager or Parameter Store.
+
+Build the frontend with the public API URL (for example, an API load balancer hostname). The value is exposed to browser code, so it must not contain secrets. Set `BACKEND_CORS_ORIGINS` to the public frontend origin. If an ingress routes both services under one public hostname, leave `VITE_API_BASE_URL` empty and use same-origin `/api` calls.
+
+Run Alembic as a one-off deployment task before releasing a backend version that needs schema changes:
+
+```bash
+docker compose --env-file production.env -f docker-compose.production.yml build
+docker compose --env-file production.env -f docker-compose.production.yml run --rm backend alembic upgrade head
+docker compose --env-file production.env -f docker-compose.production.yml up -d
+```
+
+For ECS, run the `alembic upgrade head` equivalent as a one-off task. The images do not assume the Compose `db` hostname outside local development.
 
 ## API Endpoints
 

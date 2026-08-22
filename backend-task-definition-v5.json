@@ -1,0 +1,77 @@
+{
+    "containerDefinitions":  [
+                                 {
+                                     "name":  "securedataops-backend",
+                                     "image":  "011582457592.dkr.ecr.us-east-1.amazonaws.com/securedataops-backend:v2",
+                                     "cpu":  512,
+                                     "memory":  1024,
+                                     "portMappings":  [
+                                                          {
+                                                              "containerPort":  8000,
+                                                              "hostPort":  8000,
+                                                              "protocol":  "tcp",
+                                                              "name":  "securedataops-backend-8000-tcp",
+                                                              "appProtocol":  "http"
+                                                          }
+                                                      ],
+                                     "essential":  true,
+                                     "environment":  [
+                                                         {
+                                                             "name":  "BACKEND_CORS_ORIGINS",
+                                                             "value":  "http://securedataops-frontend-alb-338055559.us-east-1.elb.amazonaws.com"
+                                                         }
+                                                     ],
+                                     "environmentFiles":  [
+
+                                                          ],
+                                     "mountPoints":  [
+
+                                                     ],
+                                     "volumesFrom":  [
+
+                                                     ],
+                                     "secrets":  [
+                                                     {
+                                                         "name":  "DATABASE_URL",
+                                                         "valueFrom":  "arn:aws:secretsmanager:us-east-1:011582457592:secret:securedataops/database-url-7WHpxL:DATABASE_URL::"
+                                                     }
+                                                 ],
+                                     "ulimits":  [
+
+                                                 ],
+                                     "logConfiguration":  {
+                                                              "logDriver":  "awslogs",
+                                                              "options":  {
+                                                                              "awslogs-group":  "/ecs/securedataops-backend",
+                                                                              "awslogs-region":  "us-east-1",
+                                                                              "awslogs-stream-prefix":  "ecs"
+                                                                          },
+                                                              "secretOptions":  [
+
+                                                                                ]
+                                                          },
+                                     "systemControls":  [
+
+                                                        ]
+                                 }
+                             ],
+    "family":  "securedataops-backend",
+    "executionRoleArn":  "arn:aws:iam::011582457592:role/ecsTaskExecutionRole",
+    "networkMode":  "awsvpc",
+    "volumes":  [
+
+                ],
+    "placementConstraints":  [
+
+                             ],
+    "runtimePlatform":  {
+                            "cpuArchitecture":  "X86_64",
+                            "operatingSystemFamily":  "LINUX"
+                        },
+    "requiresCompatibilities":  [
+                                    "FARGATE"
+                                ],
+    "cpu":  "512",
+    "memory":  "1024",
+    "enableFaultInjection":  false
+}

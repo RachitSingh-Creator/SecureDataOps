@@ -19,10 +19,14 @@ ENV/
 .npm-cache/
 node_modules/
 frontend/dist/
+*.tsbuildinfo
+frontend/vite.config.js
+frontend/vite.config.d.ts
 
 # Environment files
 .env
 .env.*
+production.env
 !.env.example
 
 # IDEs
@@ -38,3 +42,7 @@ docker-compose.override.yml
 # OS files
 .DS_Store
 Thumbs.db
+
+backend-current-task-definition.json
+github-actions-deploy-policy.json
+github-actions-trust-policy.json

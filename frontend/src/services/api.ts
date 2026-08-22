@@ -1,6 +1,8 @@
 import type { User, UserPayload } from "../types";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
+// An empty value intentionally uses the current origin, which supports a
+// reverse proxy deployment without baking a service hostname into the bundle.
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, {
