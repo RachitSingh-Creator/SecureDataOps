@@ -16,7 +16,6 @@ permissions:
 
 env:
   AWS_REGION: us-east-1
-  AWS_ACCOUNT_ID: '011582457592'
   ECR_REPOSITORY: securedatops-frontend
   ECS_CLUSTER: securedataops-cluster1
   ECS_SERVICE: securedataops-frontend-service
@@ -26,12 +25,29 @@ env:
 
 jobs:
   deploy:
-    name: Build and Deploy Frontend
+    name: Validate, Build and Deploy Frontend
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Validate frontend build
+        working-directory: frontend
+        env:
+          VITE_API_BASE_URL: ${{ env.VITE_API_BASE_URL }}
+        run: npm run build
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v5
