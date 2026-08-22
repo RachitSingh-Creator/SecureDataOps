@@ -4,8 +4,8 @@ This directory starts an IaC migration for the existing `us-east-1`
 SecureDataOps production environment. It contains import-ready resource blocks
 for only the safest existing components: the backend and frontend ECR
 repositories, backend ALB and target group, its listener, ECS cluster, and ECS
-task execution role. It has no remote state backend, credentials, database
-connection string, or task-definition image tag.
+task execution role. Its production-safe S3 backend configuration has no
+credentials, database connection string, or task-definition image tag.
 
 The configuration uses AWS data sources for the existing VPC, subnets, backend
 ALB/target group, ECS cluster, ECR repositories, and ECS execution role. The
@@ -15,11 +15,76 @@ target-tracking settings, CloudWatch dashboard source, and log group are kept
 as inventory only. The current GitHub Actions pipelines remain responsible for
 building, tagging, rendering, and deploying container images.
 
+## Remote state: one-time manual bootstrap
+
+The configuration uses an S3 backend at
+`s3://securedataops-tfstate-011582457592-us-east-1/securedataops/production/terraform.tfstate`.
+The bucket is intentionally **not** an `aws_s3_bucket` resource in this
+configuration: it must exist before Terraform can initialize its backend.
+
+The backend uses S3 native locking (`use_lockfile = true`), which is the
+current replacement for DynamoDB locking. DynamoDB locking is not used because
+it is deprecated. Native S3 lockfiles require Terraform 1.10 or later; the
+configuration's version constraint was raised accordingly (and remains within
+the previously supported Terraform 1.x range).
+
+Bootstrap the following outside this Terraform directory, using a dedicated
+administrator identity. These are the only AWS resources/actions required
+before backend initialization; review the commands, account, and region before
+running them. They are documentation only and have **not** been run by this
+migration.
+
+```powershell
+$StateBucket = "securedataops-tfstate-011582457592-us-east-1"
+$Region = "us-east-1"
+
+# Create the bucket in us-east-1. Confirm the globally unique name is owned by
+# the intended AWS account before continuing.
+aws s3api create-bucket --bucket $StateBucket --region $Region
+
+# Require version recovery, SSE-S3 encryption, account-only ownership, and no
+# public access. The backend's encrypt=true also requests SSE-S3 for state and
+# lock objects.
+aws s3api put-bucket-versioning --bucket $StateBucket --versioning-configuration Status=Enabled
+aws s3api put-bucket-encryption --bucket $StateBucket --server-side-encryption-configuration '{"Rules":[{"ApplyServerSideEncryptionByDefault":{"SSEAlgorithm":"AES256"}}]}'
+aws s3api put-public-access-block --bucket $StateBucket --public-access-block-configuration BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true
+aws s3api put-bucket-ownership-controls --bucket $StateBucket --ownership-controls 'Rules=[{ObjectOwnership=BucketOwnerEnforced}]'
+```
+
+Before initialization, grant the Terraform operator least-privilege access to
+the bucket: `s3:ListBucket` on the bucket; `s3:GetObject` and `s3:PutObject` on
+the state object; and `s3:GetObject`, `s3:PutObject`, and `s3:DeleteObject` on
+the adjacent `terraform.tfstate.tflock` object. Do not grant deletion on the
+state object. Also retain access to previous object versions for recovery.
+
+### One-time local-state migration
+
+Perform this only after the bootstrap is complete and a backup of the current
+local state is held securely. It migrates state metadata only; it does not
+create, alter, import, or delete AWS infrastructure.
+
+```powershell
+# Run from infra/terraform with authenticated AWS credentials. Do not add
+# credentials to backend.tf, tfvars, source control, or a plan file.
+Copy-Item terraform.tfstate terraform.tfstate.pre-s3-migration-backup
+terraform init -migrate-state
+terraform state list
+```
+
+Accept the migration prompt only after confirming the destination bucket and
+key shown by Terraform exactly match the backend above. Confirm the state
+object has a current version in S3, retain the local backup outside source
+control, and then run the normal plan workflow below. Do not use
+`terraform init -reconfigure` for this first migration because it discards the
+previous backend configuration instead of offering to copy state.
+
 ## Initial migration workflow
 
 1. Install a compatible Terraform CLI and authenticate the AWS CLI/provider
    with read-only access to the existing environment.
-2. From this directory, run `terraform init` and then `terraform fmt -check`.
+2. Complete the one-time remote-state bootstrap and migration above. For later
+   normal runs, authenticate to AWS and run `terraform init`, then
+   `terraform fmt -check`.
 3. Identify the listener without assuming its port or position, then set the
    verified ARN for this shell before running a plan:
 
@@ -80,6 +145,8 @@ complete.
 The defaults identify known existing resources. Override non-secret inventory
 values only through local `*.tfvars` files, which are ignored by Git. Never put
 database passwords, API keys, secrets, or connection strings in Terraform
-variables, source files, plans, or state. A remote encrypted state backend,
-state locking, IAM permissions, and CI/CD integration are deliberate later
-migration steps, not part of this scaffold.
+variables, source files, plans, or state. The S3 backend configuration contains
+no credentials; obtain backend and provider credentials through an approved AWS
+identity mechanism. State access, including the lockfile, must be restricted to
+trusted Terraform operators. CI/CD integration remains a deliberate later
+migration step.
