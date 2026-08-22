@@ -49,6 +49,10 @@ aws s3api put-bucket-versioning --bucket $StateBucket --versioning-configuration
 aws s3api put-bucket-encryption --bucket $StateBucket --server-side-encryption-configuration '{"Rules":[{"ApplyServerSideEncryptionByDefault":{"SSEAlgorithm":"AES256"}}]}'
 aws s3api put-public-access-block --bucket $StateBucket --public-access-block-configuration BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true
 aws s3api put-bucket-ownership-controls --bucket $StateBucket --ownership-controls 'Rules=[{ObjectOwnership=BucketOwnerEnforced}]'
+
+# Retain prior state versions for one year while retaining the current state
+# object. Review this lifecycle policy with the security owner before execution.
+aws s3api put-bucket-lifecycle-configuration --bucket $StateBucket --lifecycle-configuration '{"Rules":[{"ID":"retain-terraform-state-versions","Status":"Enabled","Filter":{"Prefix":"securedataops/production/terraform.tfstate"},"NoncurrentVersionExpiration":{"NoncurrentDays":365}}]}'
 ```
 
 Before initialization, grant the Terraform operator least-privilege access to

@@ -69,6 +69,17 @@ variable "db_instance_identifier" {
   default     = "securedataops-db"
 }
 
+variable "rds_minimum_backup_retention_days" {
+  description = "Minimum automated RDS backup retention required by the production DR baseline."
+  type        = number
+  default     = 7
+
+  validation {
+    condition     = var.rds_minimum_backup_retention_days >= 1 && var.rds_minimum_backup_retention_days <= 35
+    error_message = "RDS automated backup retention must be between 1 and 35 days."
+  }
+}
+
 variable "ecs_execution_role_name" {
   description = "Existing ECS task execution IAM role name."
   type        = string
