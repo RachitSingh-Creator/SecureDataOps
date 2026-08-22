@@ -1,9 +1,9 @@
-alembic==1.13.2
+﻿alembic==1.13.2
 email-validator==2.2.0
 fastapi==0.141.1
 httpx==0.27.2
 psycopg[binary]==3.2.1
-PyJWT==2.10.1
+PyJWT==2.13.0
 pydantic-settings==2.5.2
 pytest==9.0.3
 SQLAlchemy==2.0.35
