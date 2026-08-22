@@ -9,6 +9,7 @@ import pytest
 from fastapi.testclient import TestClient
 from psycopg import OperationalError as PsycopgOperationalError
 from sqlalchemy.exc import OperationalError as SQLAlchemyOperationalError
+from sqlalchemy.exc import TimeoutError as SQLAlchemyTimeoutError
 
 from app.main import REQUEST_ID_HEADER, app
 from app.services import user_service
@@ -23,6 +24,8 @@ from app.services import user_service
             RuntimeError("connection to db.internal failed for postgresql://user:password@host/db"),
         ),
         PsycopgOperationalError("connection to db.internal failed"),
+        PsycopgOperationalError("canceling statement due to statement timeout"),
+        SQLAlchemyTimeoutError("database operation timed out"),
     ],
 )
 def test_database_operational_errors_return_generic_503(monkeypatch, database_error) -> None:
@@ -31,11 +34,15 @@ def test_database_operational_errors_return_generic_503(monkeypatch, database_er
 
     monkeypatch.setattr(user_service, "list_users", database_unavailable)
 
-    response = TestClient(app, raise_server_exceptions=False).get("/api/v1/users")
+    request_id = "timeout-test-request-id"
+    response = TestClient(app, raise_server_exceptions=False).get(
+        "/api/v1/users",
+        headers={REQUEST_ID_HEADER: request_id},
+    )
 
     assert response.status_code == 503
     assert response.json() == {"detail": "Database temporarily unavailable."}
-    assert response.headers[REQUEST_ID_HEADER]
+    assert response.headers[REQUEST_ID_HEADER] == request_id
     assert response.headers["X-Content-Type-Options"] == "nosniff"
     assert response.headers["X-Frame-Options"] == "DENY"
     assert response.headers["Referrer-Policy"] == "no-referrer"

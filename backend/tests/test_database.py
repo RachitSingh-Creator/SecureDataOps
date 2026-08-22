@@ -8,7 +8,7 @@ os.environ.setdefault(
 from app.db.database import engine
 
 
-def test_database_connect_timeout(monkeypatch) -> None:
+def test_database_connection_timeouts(monkeypatch) -> None:
     connect_args: dict[str, object] = {}
 
     def connect(*args, **kwargs):
@@ -20,6 +20,7 @@ def test_database_connect_timeout(monkeypatch) -> None:
     engine.pool._creator()
 
     assert connect_args["connect_timeout"] == 10
+    assert connect_args["options"] == "-c statement_timeout=5000"
 
 
 def test_database_pool_configuration() -> None:
