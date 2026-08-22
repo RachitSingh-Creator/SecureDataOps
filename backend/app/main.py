@@ -1,7 +1,7 @@
 import logging
 import sys
 import time
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
@@ -41,6 +41,16 @@ def configure_logging() -> logging.Logger:
 
 logger = configure_logging()
 
+
+def request_id_from_header(value: str | None) -> str:
+    """Accept only UUID request IDs so untrusted header content never reaches logs."""
+    if value:
+        try:
+            return str(UUID(value))
+        except ValueError:
+            pass
+    return str(uuid4())
+
 app = FastAPI(
     title="SecureDataOps",
     version="0.1.0",
@@ -77,14 +87,14 @@ async def database_unavailable(request: Request, _exc: Exception) -> JSONRespons
 
 @app.middleware("http")
 async def observe_requests_and_add_security_headers(request: Request, call_next):
-    request_id = request.headers.get(REQUEST_ID_HEADER) or str(uuid4())
+    request_id = request_id_from_header(request.headers.get(REQUEST_ID_HEADER))
     request.state.request_id = request_id
     started_at = time.perf_counter()
 
     try:
         response = await call_next(request)
     except Exception:
-        logger.exception(
+        logger.error(
             "Unhandled request error method=%s path=%s",
             request.method,
             request.url.path,

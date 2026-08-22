@@ -1,4 +1,5 @@
 import os
+from uuid import uuid4
 
 os.environ.setdefault(
     "DATABASE_URL",
@@ -34,7 +35,7 @@ def test_database_operational_errors_return_generic_503(monkeypatch, database_er
 
     monkeypatch.setattr(user_service, "list_users", database_unavailable)
 
-    request_id = "timeout-test-request-id"
+    request_id = str(uuid4())
     response = TestClient(app, raise_server_exceptions=False).get(
         "/api/v1/users",
         headers={REQUEST_ID_HEADER: request_id},

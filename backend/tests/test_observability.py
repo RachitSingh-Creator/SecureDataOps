@@ -1,6 +1,6 @@
 import logging
 import os
-from uuid import UUID
+from uuid import UUID, uuid4
 
 os.environ.setdefault(
     "DATABASE_URL",
@@ -19,7 +19,7 @@ def test_request_id_is_generated_and_returned() -> None:
 
 
 def test_request_id_is_preserved_and_returned() -> None:
-    request_id = "test-request-id"
+    request_id = str(uuid4())
 
     response = TestClient(app).get("/health", headers={REQUEST_ID_HEADER: request_id})
 
@@ -43,12 +43,16 @@ def test_request_is_logged(caplog) -> None:
     )
 
 
-def test_unexpected_error_is_generic_and_keeps_security_headers() -> None:
+def test_unexpected_error_is_generic_and_keeps_security_headers(caplog) -> None:
     async def unexpected_error():
         raise RuntimeError("DATABASE_URL=postgresql://user:password@host/db")
 
-    app.add_api_route("/_test-unexpected-error", unexpected_error)
-    response = TestClient(app, raise_server_exceptions=False).get("/_test-unexpected-error")
+    logger.addHandler(caplog.handler)
+    try:
+        app.add_api_route("/_test-unexpected-error", unexpected_error)
+        response = TestClient(app, raise_server_exceptions=False).get("/_test-unexpected-error")
+    finally:
+        logger.removeHandler(caplog.handler)
 
     assert response.status_code == 500
     assert response.json() == {"detail": "Internal Server Error"}
@@ -57,3 +61,4 @@ def test_unexpected_error_is_generic_and_keeps_security_headers() -> None:
     assert response.headers["X-Frame-Options"] == "DENY"
     assert response.headers["Referrer-Policy"] == "no-referrer"
     assert response.headers[REQUEST_ID_HEADER]
+    assert all("DATABASE_URL" not in record.message for record in caplog.records)

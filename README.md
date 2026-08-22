@@ -2,7 +2,10 @@
 
 SecureDataOps is a staged portfolio project for a production-oriented secure data platform. Phase 1 establishes a clean full-stack foundation with a React frontend, FastAPI backend, PostgreSQL, SQLAlchemy, Alembic, pytest, Docker, and Docker Compose.
 
-DPDP-oriented privacy controls are intentionally planned for later phases. This Phase 1 application should not be treated as legally DPDP compliant.
+Basic privacy engineering controls are implemented for the current user record.
+This application is not, by itself, a declaration of legal DPDP compliance; see
+`docs/DPDP.md` for the data inventory, implemented controls, and required
+manual/legal work.
 
 ## Phase 1 Scope
 
@@ -17,7 +20,9 @@ Phase 1 includes:
 - Dockerized local development with Docker Compose
 - pytest foundation for health and user API behavior
 
-Phase 1 intentionally excludes authentication, authorization, consent management, deletion workflows, audit logging, retention policies, Redis, background workers, cloud deployment, CI/CD, and monitoring.
+Phase 1 intentionally excludes authentication, authorization, consent
+management, a legally approved retention schedule, Redis, background workers,
+and automated privacy-request identity verification.
 
 ## Architecture
 
@@ -232,6 +237,7 @@ For ECS, run the `alembic upgrade head` equivalent as a one-off task. The images
 - `POST /api/v1/users`
 - `GET /api/v1/users`
 - `GET /api/v1/users/{user_id}`
+- `GET /api/v1/users/{user_id}/export`
 - `PUT /api/v1/users/{user_id}`
 - `DELETE /api/v1/users/{user_id}`
 
@@ -267,14 +273,17 @@ curl -X DELETE http://localhost:8000/api/v1/users/<user_id>
 
 ## Current Limitations
 
-- No authentication or authorization
+- No login, password, registration, or token-issuance flow; protected privacy
+  endpoints rely on externally issued bearer JWTs
 - No consent management
-- No DPDP workflow implementation
-- No audit logging or retention automation
+- No automated identity verification, grievance channel, or legally approved retention automation
 - No Redis, background workers, or cloud deployment
 - No monitoring or CI/CD pipeline
 - User API tests use a lightweight mocked persistence layer; database-backed integration tests can be added in a later hardening phase
 
 ## Planned Future Phases
 
-Later phases can add authentication, consent management, deletion workflows, audit logging, retention policies, Redis-backed workers, AWS deployment, DevSecOps CI/CD, monitoring, and SRE practices.
+Later phases can add authentication, consent management, verified privacy
+requests, a grievance channel, a legally approved retention schedule,
+Redis-backed workers, AWS deployment, DevSecOps CI/CD, monitoring, and SRE
+practices.
