@@ -39,6 +39,15 @@ production.env
 docker-compose.override.yml
 *.log
 
+# Terraform local state and sensitive inputs
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+*.tfvars
+*.tfvars.json
+
 # OS files
 .DS_Store
 Thumbs.db
