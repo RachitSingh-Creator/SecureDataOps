@@ -299,3 +299,101 @@ resource "aws_iam_role" "ecs_execution" {
     prevent_destroy = true
   }
 }
+
+resource "aws_ecs_service" "backend" {
+  name            = var.backend_service_name
+  cluster         = data.aws_ecs_cluster.securedataops.id
+  task_definition = "securedataops-backend:19"
+
+  desired_count = 1
+  launch_type   = "FARGATE"
+
+  platform_version              = "LATEST"
+  availability_zone_rebalancing = "ENABLED"
+
+  deployment_minimum_healthy_percent = 100
+  deployment_maximum_percent         = 200
+
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = true
+  }
+
+  load_balancer {
+    target_group_arn = data.aws_lb_target_group.backend.arn
+    container_name   = "securedataops-backend"
+    container_port   = 8000
+  }
+
+  network_configuration {
+    subnets          = ["subnet-02aa4c2aeaa4c1cad", "subnet-0021519bd60898364"]
+    security_groups  = ["sg-08576ff520a5c29af"]
+    assign_public_ip = false
+  }
+
+  lifecycle {
+    ignore_changes = [
+      task_definition
+    ]
+  }
+}
+
+resource "aws_ecs_service" "frontend" {
+  name            = var.frontend_service_name
+  cluster         = data.aws_ecs_cluster.securedataops.id
+  task_definition = "securedataops-frontend:10"
+
+  desired_count = 1
+  launch_type   = "FARGATE"
+
+  platform_version              = "LATEST"
+  availability_zone_rebalancing = "ENABLED"
+
+  deployment_minimum_healthy_percent = 100
+  deployment_maximum_percent         = 200
+
+  load_balancer {
+    target_group_arn = data.aws_lb_target_group.frontend.arn
+    container_name   = "securedataops-frontend"
+    container_port   = 8080
+  }
+
+  network_configuration {
+    subnets          = ["subnet-02aa4c2aeaa4c1cad"]
+    security_groups  = ["sg-08576ff520a5c29af"]
+    assign_public_ip = false
+  }
+
+  lifecycle {
+    ignore_changes = [
+      task_definition
+    ]
+  }
+}
+
+resource "aws_appautoscaling_target" "backend" {
+  max_capacity       = 3
+  min_capacity       = 1
+  resource_id        = "service/${data.aws_ecs_cluster.securedataops.cluster_name}/${var.backend_service_name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+}
+
+resource "aws_appautoscaling_policy" "backend_request_scaling" {
+  name               = "securedataops-backend-request-scaling"
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.backend.resource_id
+  scalable_dimension = aws_appautoscaling_target.backend.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.backend.service_namespace
+
+  target_tracking_scaling_policy_configuration {
+    target_value       = 100
+    scale_out_cooldown = 60
+    scale_in_cooldown  = 300
+
+    predefined_metric_specification {
+      predefined_metric_type = "ALBRequestCountPerTarget"
+      resource_label         = "app/securedataops-alb/a1b68a761929383a/targetgroup/securedataops-backend-tg/781ee1c7b999a392"
+    }
+  }
+}

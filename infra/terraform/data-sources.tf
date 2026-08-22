@@ -43,3 +43,7 @@ data "aws_ecr_repository" "frontend" {
 data "aws_iam_role" "ecs_execution" {
   name = var.ecs_execution_role_name
 }
+
+data "aws_lb_target_group" "frontend" {
+  name = "securedataops-frontend-tg"
+}
