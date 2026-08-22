@@ -33,12 +33,16 @@
                                         },
                                         "initProcessEnabled": true
                                     },
-                                     "environment":  [
-                                                         {
-                                                             "name":  "BACKEND_CORS_ORIGINS",
-                                                             "value":  "http://securedataops-frontend-alb-338055559.us-east-1.elb.amazonaws.com"
-                                                         }
-                                                     ],
+                                    "environment": [
+                                        {
+                                            "name": "BACKEND_CORS_ORIGINS",
+                                            "value": "http://securedataops-frontend-alb-338055559.us-east-1.elb.amazonaws.com"
+                                        },
+                                        {
+                                            "name": "APP_ENV",
+                                            "value": "production"
+                                        }
+                                    ],
                                      "environmentFiles":  [
 
                                                           ],
