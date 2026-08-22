@@ -1,0 +1,71 @@
+name: Terraform Validation
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "infra/terraform/**"
+      - ".github/workflows/terraform-validation.yml"
+  workflow_dispatch:
+
+# This workflow uses GitHub OIDC only. It does not receive repository secrets
+# and it has no write permission to repository contents or AWS infrastructure.
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: terraform-validation-production
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: us-east-1
+  TF_IN_AUTOMATION: "true"
+  TF_VAR_backend_listener_arn: ${{ vars.TERRAFORM_BACKEND_LISTENER_ARN }}
+
+jobs:
+  validate:
+    name: Format, Validate, and Plan Terraform
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check Terraform CI configuration
+        env:
+          TERRAFORM_AWS_ROLE_ARN: ${{ vars.TERRAFORM_AWS_ROLE_ARN }}
+          TERRAFORM_BACKEND_LISTENER_ARN: ${{ vars.TERRAFORM_BACKEND_LISTENER_ARN }}
+        run: |
+          test -n "$TERRAFORM_AWS_ROLE_ARN" || { echo "::error::Set the TERRAFORM_AWS_ROLE_ARN repository variable to the dedicated Terraform OIDC role ARN."; exit 1; }
+          test -n "$TERRAFORM_BACKEND_LISTENER_ARN" || { echo "::error::Set the TERRAFORM_BACKEND_LISTENER_ARN repository variable to the verified backend ALB listener ARN."; exit 1; }
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.15.9
+
+      - name: Configure AWS credentials with OIDC
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ vars.TERRAFORM_AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          inline-session-policy: >-
+            {"Version":"2012-10-17","Statement":[{"Sid":"TerraformStateBucketList","Effect":"Allow","Action":"s3:ListBucket","Resource":"arn:aws:s3:::securedataops-tfstate-011582457592-us-east-1","Condition":{"StringLike":{"s3:prefix":["securedataops/production/terraform.tfstate","securedataops/production/terraform.tfstate.tflock"]}}},{"Sid":"TerraformStateReadWrite","Effect":"Allow","Action":["s3:GetObject","s3:PutObject"],"Resource":"arn:aws:s3:::securedataops-tfstate-011582457592-us-east-1/securedataops/production/terraform.tfstate"},{"Sid":"TerraformLockReadWrite","Effect":"Allow","Action":["s3:GetObject","s3:PutObject","s3:DeleteObject"],"Resource":"arn:aws:s3:::securedataops-tfstate-011582457592-us-east-1/securedataops/production/terraform.tfstate.tflock"},{"Sid":"TerraformInventoryRead","Effect":"Allow","Action":["ec2:DescribeVpcs","ec2:DescribeSubnets","ecr:DescribeRepositories","ecs:DescribeClusters","elasticloadbalancing:DescribeListeners","elasticloadbalancing:DescribeLoadBalancers","elasticloadbalancing:DescribeTargetGroups","iam:GetRole"],"Resource":"*"}]}
+
+      - name: Terraform format check
+        working-directory: infra/terraform
+        run: terraform fmt -check
+
+      - name: Terraform initialize
+        working-directory: infra/terraform
+        run: terraform init -input=false
+
+      - name: Terraform validate
+        working-directory: infra/terraform
+        run: terraform validate
+
+      - name: Terraform plan (read-only)
+        working-directory: infra/terraform
+        run: terraform plan -input=false -lock-timeout=5m

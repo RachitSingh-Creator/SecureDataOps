@@ -57,6 +57,37 @@ the state object; and `s3:GetObject`, `s3:PutObject`, and `s3:DeleteObject` on
 the adjacent `terraform.tfstate.tflock` object. Do not grant deletion on the
 state object. Also retain access to previous object versions for recovery.
 
+### GitHub Actions validation access
+
+Terraform validation is isolated in
+`.github/workflows/terraform-validation.yml`; it does not run application
+builds or deployments and it never runs `terraform apply`. It uses the same
+GitHub OIDC authentication pattern as the existing deployment workflows, but
+requires a **separate Terraform validation IAM role**. Do not reuse the
+deployment role unless it is replaced with a role that has only the policy
+below and an appropriately scoped OIDC trust relationship.
+
+Before enabling a successful Terraform CI run, an AWS administrator must:
+
+1. Create or update the dedicated role trust policy to allow this repository's
+   GitHub Actions OIDC subject for the `main` branch (matching the workflow's
+   trigger) to call `sts:AssumeRoleWithWebIdentity`.
+2. Attach a policy that permits only the state-object/lock-object S3 actions
+   listed above, plus read-only inventory actions: `ec2:DescribeVpcs`,
+   `ec2:DescribeSubnets`, `ecr:DescribeRepositories`,
+   `ecs:DescribeClusters`, `elasticloadbalancing:DescribeListeners`,
+   `elasticloadbalancing:DescribeLoadBalancers`,
+   `elasticloadbalancing:DescribeTargetGroups`, and `iam:GetRole`.
+3. Set the non-secret GitHub Actions repository variables
+   `TERRAFORM_AWS_ROLE_ARN` (the dedicated role ARN) and
+   `TERRAFORM_BACKEND_LISTENER_ARN` (the already-verified listener ARN).
+
+The workflow applies an inline session policy that further restricts the OIDC
+session to precisely those S3 state/lock paths and inventory reads. It has no
+AWS permissions to create, update, delete, import, or apply infrastructure.
+It intentionally fails with setup guidance until both repository variables are
+configured; no credentials are hard-coded in the workflow.
+
 ### One-time local-state migration
 
 Perform this only after the bootstrap is complete and a backup of the current
