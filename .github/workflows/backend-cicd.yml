@@ -24,12 +24,19 @@ env:
 
 jobs:
   deploy:
-    name: Test, Scan, Build and Deploy Backend
+    name: Security, Test, Build and Deploy Backend
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Scan repository for secrets
+        uses: gitleaks/gitleaks-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -46,11 +53,17 @@ jobs:
         working-directory: backend
         run: pytest -q
 
+      - name: Audit Python dependencies
+        working-directory: backend
+        run: |
+          pip install pip-audit
+          pip-audit -r requirements.txt --strict
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: arn:aws:iam::011582457592:role/SecureDataOps-GitHubActions
-          aws-region: us-east-1
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -73,7 +86,7 @@ jobs:
         with:
           image-ref: ${{ steps.build-image.outputs.image }}
           format: table
-          exit-code: '0'
+          exit-code: '1'
           ignore-unfixed: true
           severity: CRITICAL,HIGH
 
@@ -87,7 +100,7 @@ jobs:
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: backend-task-definition-v5.json
+          task-definition: ${{ env.TASK_DEFINITION }}
           container-name: ${{ env.CONTAINER_NAME }}
           image: ${{ steps.build-image.outputs.image }}
 
