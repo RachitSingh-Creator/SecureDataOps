@@ -6,6 +6,10 @@ from uuid import uuid4
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from psycopg import InterfaceError as PsycopgInterfaceError
+from psycopg import OperationalError as PsycopgOperationalError
+from sqlalchemy.exc import DisconnectionError, InterfaceError, OperationalError
+from sqlalchemy.exc import TimeoutError as SQLAlchemyTimeoutError
 
 from app.api.users import router as users_router
 from app.core.config import get_settings
@@ -52,9 +56,29 @@ app.add_middleware(
 )
 
 
+@app.exception_handler(OperationalError)
+@app.exception_handler(InterfaceError)
+@app.exception_handler(DisconnectionError)
+@app.exception_handler(SQLAlchemyTimeoutError)
+@app.exception_handler(PsycopgOperationalError)
+@app.exception_handler(PsycopgInterfaceError)
+async def database_unavailable(request: Request, _exc: Exception) -> JSONResponse:
+    logger.warning(
+        "Database temporarily unavailable request_id=%s method=%s path=%s",
+        getattr(request.state, "request_id", "unknown"),
+        request.method,
+        request.url.path,
+    )
+    return JSONResponse(
+        status_code=503,
+        content={"detail": "Database temporarily unavailable."},
+    )
+
+
 @app.middleware("http")
 async def observe_requests_and_add_security_headers(request: Request, call_next):
     request_id = request.headers.get(REQUEST_ID_HEADER) or str(uuid4())
+    request.state.request_id = request_id
     started_at = time.perf_counter()
 
     try:
