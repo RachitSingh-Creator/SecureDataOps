@@ -155,12 +155,12 @@ The services run on **AWS Fargate**, avoiding the need to manage EC2 servers.
 ### Backend service
 
 ![Backend ECS Service](docs/images/backend-service.png)
-![Application Backend](docs\images\backend.png)
+![Application Backend](docs/images/backend.png)
 
 ### Frontend service
 
 ![Frontend ECS Service](docs/images/frontend-service.png)
-![Application Frontend](docs\images\dashboard.png)
+![Application Frontend](docs/images/dashboard.png)
 
 The deployed services were verified with the expected running task state.
 
