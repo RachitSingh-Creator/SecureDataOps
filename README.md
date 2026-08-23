@@ -1,1382 +1,1145 @@
-# SecureDataOps
+Yes. For your SecureDataOps project, I’d make the README look like a proper production project README, with the image paths already included.
 
-> A production-oriented DevOps, SRE, and DevSecOps platform demonstrating how a containerized full-stack application can be deployed, secured, monitored, scaled, and recovered on AWS.
+I’ll assume your images are stored like this:
 
-<!--
-MAIN PROJECT SCREENSHOT
+securedataops/
+├── backend/
+├── frontend/
+├── docs/
+│   └── images/
+│       ├── architecture.png
+│       ├── aws-architecture.png
+│       ├── dashboard.png
+│       ├── login.png
+│       └── ...
+└── README.md
 
-Place your clean application screenshot here.
+Here is a suitable README:
 
-Recommended:
-docs/images/application-dashboard.png
+SecureDataOps README
+SecureDataOps
 
-Use dummy users/data in the public screenshot.
-Do not expose real emails, phone numbers, UUIDs, credentials, tokens, or other personal information.
--->
+SecureDataOps is a secure data management and compliance platform designed to help organizations manage sensitive data while following the principles of the Digital Personal Data Protection (DPDP) Act, 2023.
 
----
+The platform provides a centralized system for managing data, monitoring access, identifying sensitive information, and supporting privacy and compliance workflows.
 
-## Overview
+📌 Project Overview
 
-SecureDataOps is a full-stack cloud application built to demonstrate the complete lifecycle of operating a production-oriented workload on AWS.
+Organizations handle large amounts of personal and sensitive information every day. Managing this data securely while maintaining compliance can be difficult when data is distributed across different systems.
 
-The project is intentionally designed beyond the basic:
+SecureDataOps aims to provide a unified platform where organizations can:
 
-```text
-Docker → AWS → Application Running
-````
+Manage and monitor sensitive data
+Identify personal and sensitive information
+Control data access
+Maintain visibility over data operations
+Support privacy and compliance workflows
+Monitor security-related activities
+Provide a centralized dashboard for administrators
+🏗️ System Architecture
 
-Instead, it covers:
+The application follows a modern full-stack architecture using a frontend, backend API, database, containerization, and AWS infrastructure.
 
-```text
-Application Development
-        ↓
-GitHub
-        ↓
-CI/CD
-        ↓
-Security Validation
-        ↓
-Docker
-        ↓
-Amazon ECR
-        ↓
-Amazon ECS Fargate
-        ↓
+
+
+
+High-Level Flow
+User
+  │
+  ▼
+Frontend
+  │
+  ▼
 Application Load Balancer
-        ↓
-PostgreSQL / Amazon RDS
-        ↓
-Monitoring
-        ↓
-Alerting
-        ↓
+  │
+  ▼
+Backend API
+  │
+  ├── Authentication
+  ├── Data Management
+  ├── Compliance
+  ├── Security
+  └── Analytics
+  │
+  ▼
+Database
+☁️ AWS Deployment Architecture
+
+The application is containerized using Docker and deployed using AWS services.
+
+
+
+
+The deployment includes components such as:
+
+Amazon ECR for container images
+Amazon ECS for containerized application deployment
+Application Load Balancer for traffic routing
+AWS networking infrastructure
+Backend API service
+Frontend service
+Database infrastructure
+✨ Key Features
+🔐 Secure Data Management
+
+Manage organizational data through a centralized platform with controlled access and secure processing.
+
+👤 Data Subject Management
+
+Support workflows related to individuals whose personal data is being processed.
+
+📋 Consent Management
+
+Track and manage consent-related information for personal data processing.
+
+🔎 Data Discovery
+
+Identify and classify personal or sensitive information within organizational data.
+
+🛡️ Access Control
+
+Provide controlled access to application resources based on user roles and permissions.
+
+📊 Compliance Dashboard
+
+Provide administrators with a centralized view of data, compliance activities, and security-related information.
+
+
+
+
+📝 Audit & Monitoring
+
+Maintain visibility into important activities performed within the platform.
+
+🖥️ Application Screenshots
+Login
+
+
+
+
+Dashboard
+
+
+
+
+Data Management
+
+
+
+
+Compliance
+
+
+
+
+Replace any screenshot filename above with the actual filename if your image has a different name.
+
+🧩 Technology Stack
+Frontend
+React.js
+JavaScript / TypeScript
+HTML5
+CSS
+Vite
+Backend
+Python
+FastAPI
+REST APIs
+Pydantic
+Database
+PostgreSQL
+DevOps & Deployment
+Docker
+Amazon ECR
+Amazon ECS
+Application Load Balancer
+AWS
+Development Tools
+Git
+GitHub
+Docker Desktop
+AWS CLI
+📂 Project Structure
+securedataops/
+│
+├── backend/
+│   ├── app/
+│   ├── requirements.txt
+│   ├── Dockerfile
+│   └── ...
+│
+├── frontend/
+│   ├── src/
+│   ├── public/
+│   ├── package.json
+│   ├── Dockerfile
+│   └── ...
+│
+├── docs/
+│   └── images/
+│       ├── architecture.png
+│       ├── aws-architecture.png
+│       ├── dashboard.png
+│       ├── login.png
+│       ├── data-management.png
+│       └── compliance.png
+│
+├── .gitignore
+├── README.md
+└── ...
+🚀 Running the Project Locally
+1. Clone the Repository
+git clone <your-github-repository-url>
+cd securedataops
+2. Backend Setup
+
+Navigate to the backend:
+
+cd backend
+
+Create and activate a virtual environment:
+
+python -m venv venv
+
+On Windows:
+
+venv\Scripts\activate
+
+Install dependencies:
+
+pip install -r requirements.txt
+
+Start the backend:
+
+uvicorn app.main:app --reload
+
+The backend API will normally be available at:
+
+http://localhost:8000
+3. Frontend Setup
+
+Open another terminal:
+
+cd frontend
+
+Install dependencies:
+
+npm install
+
+Start the development server:
+
+npm run dev
+
+The frontend will normally be available at:
+
+http://localhost:5173
+🐳 Docker
+
+The project can also be containerized using Docker.
+
+Build Backend
+docker build -t securedataops-backend ./backend
+Build Frontend
+docker build -t securedataops-frontend ./frontend
+
+The containers can then be deployed to the AWS infrastructure.
+
+☁️ AWS Deployment
+
+The production deployment uses containerized services.
+
+Deployment Flow
+Local Source Code
+       │
+       ▼
+Docker Build
+       │
+       ▼
+Amazon ECR
+       │
+       ▼
+Amazon ECS
+       │
+       ▼
+Application Load Balancer
+       │
+       ▼
+Users
+Container Images
+
+The application images are stored in Amazon ECR and deployed through ECS.
+
+Note: The existing frontend ECR repository is named securedatops-frontend and intentionally retains this spelling because it is already deployed. The intended project naming is securedataops, but the existing repository should not be renamed in deployment commands.
+
+🔒 Security & Privacy
+
+Security is a core part of SecureDataOps.
+
+The platform is designed around principles such as:
+
+Least-privilege access
+Authentication and authorization
+Secure API communication
+Controlled access to sensitive information
+Auditability of important operations
+Secure container deployment
+Protection of application secrets
+Privacy-aware data processing
+
+Secrets and credentials should never be committed directly to the Git repository.
+
+Use environment variables or a secure secrets-management solution instead.
+
+🇮🇳 DPDP Act Alignment
+
+SecureDataOps is designed to support organizational workflows related to India's Digital Personal Data Protection Act, 2023.
+
+The platform can help organizations operationalize concepts such as:
+
+Personal data management
+Consent management
+Data principal rights
+Purpose-aware data processing
+Data security
+Data retention considerations
+Data breach response workflows
+Audit and accountability
+
+SecureDataOps is a technology platform intended to support compliance operations. It does not itself constitute legal advice or guarantee legal compliance.
+
+📊 Compliance Workflow
+Data Collection
+      │
+      ▼
+Data Identification
+      │
+      ▼
+Data Classification
+      │
+      ▼
+Consent & Purpose Management
+      │
+      ▼
+Access Control
+      │
+      ▼
+Monitoring & Auditing
+      │
+      ▼
+Compliance Review
+🧪 Development
+
+Before pushing changes, verify the application locally.
+
+Backend
+python -m pytest
+Frontend
+npm run build
+Git Workflow
+git status
+git add .
+git commit -m "Describe your changes"
+git push
+📸 Documentation Images
+
+Project documentation images are maintained inside:
+
+docs/images/
+
+Recommended image naming:
+
+docs/images/
+├── architecture.png
+├── aws-architecture.png
+├── login.png
+├── dashboard.png
+├── data-management.png
+└── compliance.png
+
+Images can be referenced from this README using relative Markdown paths:
+
+![Dashboard](docs/images/dashboard.png)
+🔮 Future Improvements
+
+Potential future improvements include:
+
+Advanced data classification
+Automated PII detection
+Data lineage visualization
+Automated compliance reports
+More granular role-based access control
+Security event monitoring
+Data retention automation
+Improved audit trails
+Automated compliance assessments
+Integration with enterprise data sources
+👨‍💻 Project
+
+SecureDataOps
+
+A secure data management and privacy compliance platform built to help organizations manage personal data and operationalize privacy requirements.
+
+📄 License
+
+Add the appropriate project license here.
+
+For example:
+
+MIT License
+
+if the project is intended to be released under the MIT License.
+
+Pasted markdown(20260823-090318).md
+File
+in this you haven't put markdown right?
+
+Yes — I did put Markdown in the README I gave you. The #, ##, ![image](...), code fences, tables, bullets, etc. are all Markdown.
+
+But I understand what you're asking now: you want the README shortened from the exact README you uploaded, while keeping the Markdown image syntax and using your actual images in docs/images/ at the same places/sections.
+
+And looking at the content you pasted, there is a problem: the uploaded README has the image locations but the actual image Markdown is missing/blank in several places. For example:
+
+## Architecture
+
+![Architecture](docs/images/architecture.png)
+
+is what needs to be present—not just an empty space after the heading.
+
+Also, your actual filenames from the README are:
+
+alarm.png
+austoscaling.png
+auto-scaling-terminal.png
+backend-service.png
+backend-tg.png
+cicdbackend.png
+cicdfrontend.png
+cluster.png
+dashboard.png
+databaseRDS.png
+frontend-service.png
+frontend-task.png
+health-check.png
+logs.png
+logsdashboard.png
+s3.png
+target-groups.png
+teraform-validate.png
+tests.png
+Vpc.png
+
+So the paths must match exactly, including capitalization and the austoscaling / teraform spellings.
+
+For example:
+
+## AWS Networking
+
+![AWS VPC](docs/images/Vpc.png)
+## Application
+
+### Frontend
+
+![Frontend Service](docs/images/frontend-service.png)
+### Backend
+
+![Backend Service](docs/images/backend-service.png)
+## ECS Cluster
+
+![ECS Cluster](docs/images/cluster.png)
+## Load Balancing
+
+![Target Groups](docs/images/target-groups.png)
+
+![Backend Target Group](docs/images/backend-tg.png)
+## Database
+
+![RDS PostgreSQL](docs/images/databaseRDS.png)
+## CI/CD
+
+### Backend CI/CD
+
+![Backend CI/CD](docs/images/cicdbackend.png)
+
+### Frontend CI/CD
+
+![Frontend CI/CD](docs/images/cicdfrontend.png)
+## Terraform Validation
+
+![Terraform Validation](docs/images/teraform-validate.png)
+## Observability
+
+![CloudWatch Logs](docs/images/logs.png)
+
+![CloudWatch Dashboard](docs/images/logsdashboard.png)
+
+![CloudWatch Alarm](docs/images/alarm.png)
+## Auto Scaling
+
+![ECS Auto Scaling](docs/images/austoscaling.png)
+
+![Auto Scaling Configuration](docs/images/auto-scaling-terminal.png)
+## Health and Reliability
+
+![Health Check](docs/images/health-check.png)
+## Testing
+
+![Tests](docs/images/tests.png)
+## Infrastructure State
+
+![S3 Terraform State](docs/images/s3.png)
+One important thing
+
+Your current README says:
+
+docs/images/architecture.png
+
+but architecture.png is not in the list of images you gave me.
+
+So don't use that path unless that file actually exists.
+
+The safest approach is to make the shortened README use only the 20 image files that you actually have, with the images placed in the same relevant sections as your current README.
+
+If you want, I can now take the exact uploaded README, shorten it to a clean portfolio-sized ~400–600 lines, and preserve all 20 of your actual screenshots with proper Markdown paths.
+
+Pasted markdown(20260823-090429).md
+File
+Pasted markdown (2).md
+File
+there are 2 files first that you gave me  and second that i made which was 2 long use this and generate me a not long but not too short i mwan readme should contain every imp architecture and how things are working + add markdowns too in it... take my readme as refernce where should be the images and give me a readme downloadable that i can just copy paste
+
+Yes — I used both files you provided: the earlier shorter README and your much longer README as the detailed reference.
+
+I made the new version medium-length rather than extremely long or too short. It keeps the important:
+
+AWS architecture and request flow
+VPC/networking
+ECS Fargate
+ALB + target groups + health checks
+RDS PostgreSQL
+ECR + Docker
+Terraform + S3 state
+GitHub Actions CI/CD
+GitHub OIDC + IAM
+DevSecOps / pip-audit
+JWT authorization
+CloudWatch + SNS
 Auto Scaling
-        ↓
-Backup & Disaster Recovery
-        ↓
-Incident Management
-        ↓
-Privacy / DPDP Controls
-```
+Backup/DR
+DPDP-oriented controls
+Incident management/SRE
+Verification
+Repository structure
+Local development
 
-The project demonstrates practical concepts from:
+And I added actual Markdown image references using your real docs/images/ filenames, including Vpc.png, cluster.png, backend-service.png, databaseRDS.png, cicdbackend.png, austoscaling.png, logs.png, etc.
 
-* DevOps
-* SRE
-* DevSecOps
-* AWS Cloud
-* Infrastructure as Code
-* CI/CD
-* Containerization
-* Observability
-* Auto Scaling
-* Backup & Disaster Recovery
-* Application Security
-* IAM
-* Privacy engineering
-* Incident management
+Download the ready-to-use README
 
----
+Download README.md
 
-# Why SecureDataOps?
+You can simply:
 
-A production application is not complete simply because it can be deployed.
+Download it.
+Rename/replace your existing README.md.
 
-Once an application is running, engineers must answer questions such as:
+Make sure it is at the root of your repository:
 
-* How is the infrastructure managed?
-* How does code reach production?
-* How are AWS credentials protected?
-* How are containers deployed?
-* How does traffic reach the application?
-* How are frontend and backend services separated?
-* How does the backend reach the database?
-* What happens when a task becomes unhealthy?
-* What happens when traffic increases?
-* How are failures detected?
-* How are engineers notified?
-* How is personal data protected?
-* How is database recovery handled?
-* How is Terraform state protected?
-* How are dependency vulnerabilities detected?
-* How are incidents handled?
+secure-data-platform/
+├── README.md
+└── docs/
+    └── images/
+        ├── Vpc.png
+        ├── dashboard.png
+        ├── ...
 
-SecureDataOps was built to answer these questions through an actual deployed system.
+Then:
 
----
+git add README.md
+git commit -m "docs: update portfolio README"
+git push
 
-# Project Goals
+Important: I did not invent image filenames for screenshots you don't currently have. I used the actual image names from your provided README/reference.
 
-The primary goals of the project are:
+README.md
+Document
 
-1. Deploy a real full-stack application on AWS.
-2. Use Docker for reproducible application environments.
-3. Use ECS Fargate instead of manually managed servers.
-4. Use Application Load Balancers for traffic routing.
-5. Use Amazon RDS PostgreSQL for persistent storage.
-6. Manage infrastructure using Terraform.
-7. Implement CI/CD using GitHub Actions.
-8. Use GitHub OIDC instead of relying on long-lived AWS credentials.
-9. Implement dependency security scanning.
-10. Implement application authentication and authorization.
-11. Implement CloudWatch monitoring and SNS notifications.
-12. Implement ECS request-based auto scaling.
-13. Establish backup and disaster-recovery controls.
-14. Implement DPDP-oriented privacy controls.
-15. Document incident response and operational procedures.
+README.md
+SecureDataOps
 
----
+A production-oriented DevOps, SRE, and DevSecOps platform demonstrating how a containerized full-stack application is deployed, secured, monitored, scaled, and recovered on AWS.
 
-# High-Level Architecture
+Overview
 
-<!--
-ARCHITECTURE DIAGRAM
+SecureDataOps is a full-stack application built with React/Vite, FastAPI, PostgreSQL, Docker, Terraform, GitHub Actions, and AWS.
 
-Place:
-docs/images/architecture-overview.png
--->
+The project demonstrates the complete production lifecycle:
 
-```text
+Developer
+   ↓
+GitHub
+   ↓
+GitHub Actions
+   ├── Tests
+   ├── Security Validation
+   └── Terraform Validation
+   ↓
+Docker Build
+   ↓
+Amazon ECR
+   ↓
+Amazon ECS Fargate
+   ↓
+Application Load Balancer
+   ↓
+PostgreSQL / Amazon RDS
+   ↓
+CloudWatch + SNS
+   ↓
+Auto Scaling
+   ↓
+Backup / Disaster Recovery
+What this project demonstrates
+AWS cloud architecture and networking
+Docker containerization
+ECS Fargate deployment
+Application Load Balancing
+Amazon ECR
+Amazon RDS PostgreSQL
+Terraform Infrastructure as Code
+GitHub Actions CI/CD
+GitHub OIDC → AWS IAM
+Dependency security scanning with pip-audit
+JWT authentication and authorization
+CloudWatch logs, metrics, and alarms
+SNS notifications
+ECS request-based Auto Scaling
+Backup and disaster recovery
+DPDP-oriented privacy engineering
+Incident management, runbooks, and SLOs
+Architecture
+High-level architecture
                               INTERNET
                                   |
-                 +----------------+----------------+
-                 |                                 |
-                 v                                 v
-       +---------------------+           +---------------------+
-       |    Frontend ALB     |           |     Backend ALB     |
-       |   Internet-facing   |           |   Internet-facing   |
-       +----------+----------+           +----------+----------+
-                  |                                 |
-                  |                                 |
-                  v                                 v
-       +---------------------+           +---------------------+
-       |   Frontend ECS      |           |    Backend ECS      |
-       |     Fargate        |           |      Fargate        |
-       |      Service       |           |       Service       |
-       +---------------------+           +----------+----------+
-                                                    |
-                                                    |
-                                                    v
-                                          +---------------------+
-                                          |    PostgreSQL RDS   |
-                                          +----------+----------+
-                                                     |
-                                                     v
-                                          +---------------------+
-                                          | Automated Backups   |
-                                          | & Point-in-Time     |
-                                          | Recovery            |
-                                          +---------------------+
+                    +-------------+-------------+
+                    |                           |
+                    v                           v
+             Frontend ALB                 Backend ALB
+                    |                           |
+                    v                           v
+             Frontend ECS                 Backend ECS
+                                                  |
+                                                  v
+                                           PostgreSQL RDS
 
 
-                AWS VPC / NETWORKING LAYER
-                ============================
-
-        Subnets
-        Security Groups
-        Routing
-        Availability Zones
+                    AWS VPC / NETWORKING
+             VPC → Subnets → Security Groups
 
 
-                OBSERVABILITY
-                =============
+CI/CD:
+Developer → GitHub → GitHub Actions → Docker → ECR → ECS
 
-        ECS / ALB / Application
-                  |
-                  v
-             CloudWatch
-                  |
-             +----+----+
-             |         |
-           Logs      Alarms
-                       |
-                       v
-                      SNS
+Observability:
+ECS / ALB / Application → CloudWatch → SNS
 
+Infrastructure:
+Terraform → AWS
 
-                CI/CD
-                =====
+Terraform State:
+Terraform → S3 → Encryption + Versioning + Lifecycle
 
-        Developer
-             |
-             v
-          GitHub
-             |
-             v
-       GitHub Actions
-             |
-       +-----+----------------+
-       |                      |
-       v                      v
-    Security              Terraform
-    Testing               Validation
-       |                      |
-       +----------+-----------+
-                  |
-                  v
-              Docker Build
-                  |
-                  v
-                 ECR
-                  |
-                  v
-                ECS
+Architecture evidence: The repository's AWS/VPC and service screenshots are included in the sections below.
 
+AWS Infrastructure
+VPC and Networking
 
-                TERRAFORM STATE
-                ===============
+The workload runs within an AWS VPC using subnets, routing, security groups, and availability-zone-aware infrastructure.
 
-              Terraform
-                  |
-                  v
-              S3 Bucket
-                  |
-       +----------+----------+
-       |                     |
-   Encryption            Versioning
-                             |
-                             v
-                   Noncurrent versions
-                       retained 365 days
-```
+The intended application path is:
 
----
-
-# AWS Network Architecture
-
-Networking is one of the most important parts of SecureDataOps.
-
-The application runs within an AWS VPC environment.
-
-The VPC provides the logical network boundary for the AWS workload.
-
-The networking architecture consists of:
-
-* VPC
-* Subnets
-* Availability Zones
-* Route configuration
-* Security Groups
-* Internet-facing Application Load Balancers
-* ECS services
-* RDS PostgreSQL
-
-The Terraform configuration references the existing production VPC and subnet environment rather than pretending that the VPC itself is recreated every time the application is deployed.
-
----
-
-## VPC
-
-The VPC provides the primary network boundary for the application.
-
-```text
-AWS Account
-    |
-    v
-   VPC
-    |
-    +----------------------+
-    |                      |
-    v                      v
- Subnet Group          Subnet Group
-    |                      |
-    v                      v
-   ALB                    ECS/RDS
-```
-
-The VPC allows the different application components to communicate through controlled private networking while exposing only the required public entry points.
-
----
-
-## Subnets
-
-The architecture separates infrastructure according to its role.
-
-Conceptually:
-
-```text
-VPC
- |
- +-------------------------------+
- |                               |
- |        Public Layer            |
- |                               |
- |     Frontend ALB               |
- |     Backend ALB                |
- |                               |
- +-------------------------------+
- |
- +-------------------------------+
- |                               |
- |       Application Layer        |
- |                               |
- |     Frontend ECS               |
- |     Backend ECS                |
- |                               |
- +-------------------------------+
- |
- +-------------------------------+
- |                               |
- |        Data Layer              |
- |                               |
- |     PostgreSQL RDS             |
- |                               |
- +-------------------------------+
-```
-
-The exact subnet and network configuration is managed/referenced through the AWS environment and Terraform configuration.
-
----
-
-# Security Groups and Network Access
-
-Security Groups act as stateful network access controls.
-
-The intended communication model is:
-
-```text
 Internet
-   |
-   v
+   ↓
+Application Load Balancer
+   ↓
+ECS Fargate
+   ↓
+PostgreSQL RDS
+
+The database is treated as a stateful data layer rather than a public application endpoint.
+
+
+
+
+Network access model
+Internet
+   ↓
+Frontend ALB → Frontend ECS
+
+Internet
+   ↓
+Backend ALB → Backend ECS → PostgreSQL RDS
+
+Security Groups control the allowed communication between these layers.
+
+ECS Fargate
+
+Frontend and backend run as separate ECS services.
+
+ECS Cluster
+├── Frontend Service
+│   └── Frontend Task
+│
+└── Backend Service
+    └── Backend Task
+
+The services run on AWS Fargate, avoiding the need to manage EC2 servers.
+
+
+
+
+Backend service
+
+
+
+
+Frontend service
+
+
+
+
+The deployed services were verified with the expected running task state.
+
+Application Load Balancing
+
+Separate ALB/target-group paths are used for the frontend and backend.
+
 Frontend ALB
-   |
-   v
+    ↓
+Frontend Target Group
+    ↓
 Frontend ECS
 
-
-Internet
-   |
-   v
 Backend ALB
-   |
-   v
-Backend ECS
-   |
-   v
-PostgreSQL RDS
-```
-
-The database should not be treated as a public application endpoint.
-
-The desired security relationship is:
-
-```text
-ALB
- |
- | allowed application traffic
- v
-ECS
- |
- | allowed database traffic
- v
-RDS
-```
-
-This creates a layered network model instead of allowing unrestricted communication between components.
-
----
-
-# Availability Zones
-
-AWS resources are designed around availability-zone-aware infrastructure.
-
-The architecture separates the network into multiple subnets/AZs where applicable so that a single infrastructure location does not become the only point of failure.
-
-RDS Multi-AZ is also enabled as part of the database availability configuration.
-
----
-
-# Application Architecture
-
-SecureDataOps consists of two main application services.
-
-```text
-                    SecureDataOps
-                         |
-              +----------+----------+
-              |                     |
-              v                     v
-         Frontend Service      Backend Service
-              |                     |
-              v                     v
-          React/Vite              FastAPI
-                                    |
-                                    v
-                               PostgreSQL
-```
-
----
-
-# Frontend
-
-The frontend is implemented using React/Vite.
-
-Responsibilities include:
-
-* application dashboard
-* displaying users
-* creating users
-* editing users
-* deleting users
-* interacting with backend APIs
-
-The frontend is packaged into a Docker image and deployed as an ECS Fargate service.
-
----
-
-# Backend
-
-The backend is implemented using FastAPI.
-
-Responsibilities include:
-
-* REST API
-* user management
-* database operations
-* health checks
-* authentication
-* authorization
-* privacy operations
-* audit events
-* request IDs
-* application error handling
-
-The backend runs inside an ECS Fargate service.
-
----
-
-# Database
-
-The application uses PostgreSQL hosted by Amazon RDS.
-
-The application stores user-related data including:
-
-* UUID
-* name
-* email
-* optional phone
-* creation timestamp
-* update timestamp
-
-The database is treated as a critical stateful component.
-
-Therefore the architecture includes:
-
-* encryption
-* automated backups
-* point-in-time recovery
-* Multi-AZ
-* recovery procedures
-
----
-
-# Complete Request Flow
-
-A normal backend request follows this path:
-
-```text
-User
- |
- v
-Backend ALB
- |
- v
-ALB Listener :80
- |
- v
+    ↓
 Backend Target Group
- |
- v
+    ↓
+Backend ECS
+
+
+
+
+Backend target group
+
+
+
+
+ALB health checks continuously evaluate whether ECS tasks are healthy enough to receive traffic.
+
+
+
+
+Application
+Frontend
+
+The frontend is implemented with React/Vite and deployed as a Dockerized ECS Fargate service.
+
+Its responsibilities include the application UI and communication with the backend APIs.
+
+
+
+
+Backend
+
+The backend is implemented with FastAPI and provides REST APIs for application operations, authentication, authorization, health checks, privacy operations, and database access.
+
+
+
+
+Database
+
+The application uses PostgreSQL on Amazon RDS for persistent data.
+
+The application stores user-related information such as:
+
+UUID
+Name
+Email
+Optional phone
+Timestamps
+
+
+
+
+Verified database controls include:
+
+PostgreSQL
+Automated backup retention
+Encryption
+Multi-AZ
+Point-in-time recovery availability
+Request Flow
+
+A normal backend request follows:
+
+User
+ ↓
+Backend ALB
+ ↓
+ALB Listener
+ ↓
+Backend Target Group
+ ↓
 Backend ECS Task
- |
- v
+ ↓
 FastAPI
- |
- v
+ ↓
 PostgreSQL RDS
- |
- v
-FastAPI Response
- |
- v
-Backend ALB
- |
- v
-User
-```
+ ↓
+Response
 
-The frontend follows a separate path:
+The frontend follows:
 
-```text
 User Browser
- |
- v
+ ↓
 Frontend ALB
- |
- v
+ ↓
 Frontend Target Group
- |
- v
+ ↓
 Frontend ECS Task
- |
- v
+ ↓
 React Application
-```
 
-When the frontend requires data:
+When the frontend needs application data, it communicates with the backend API, which then interacts with PostgreSQL.
 
-```text
-React
- |
- v
-Backend API
- |
- v
-Backend ALB
- |
- v
-Backend ECS
- |
- v
-RDS
-```
+Containerization and ECR
 
----
+Both application services are containerized with Docker.
 
-# AWS Components
-
-| Component       | Purpose                         |
-| --------------- | ------------------------------- |
-| VPC             | Network boundary                |
-| Subnets         | Network segmentation            |
-| Security Groups | Network access control          |
-| Frontend ALB    | Frontend traffic entry point    |
-| Backend ALB     | Backend API entry point         |
-| ECS Fargate     | Container runtime               |
-| ECR             | Container image registry        |
-| RDS PostgreSQL  | Persistent application database |
-| CloudWatch      | Monitoring and logging          |
-| SNS             | Notifications                   |
-| IAM             | AWS authorization               |
-| S3              | Terraform remote state          |
-| GitHub OIDC     | CI/CD AWS authentication        |
-
----
-
-# Containerization
-
-Both application services are containerized using Docker.
-
-```text
-Frontend Source
-      |
-      v
+Application Source
+      ↓
 Docker Build
-      |
-      v
-Frontend Image
-      |
-      v
-ECR
-      |
-      v
-ECS Fargate
-```
-
-The backend follows the same pattern:
-
-```text
-Backend Source
-      |
-      v
-Docker Build
-      |
-      v
-Backend Image
-      |
-      v
-ECR
-      |
-      v
-ECS Fargate
-```
-
-Containerization provides:
-
-* reproducible environments
-* dependency isolation
-* consistent deployment artifacts
-* easier rollback
-* predictable runtime behavior
-
----
-
-# Amazon ECR
-
-Amazon ECR stores the Docker images used by ECS.
-
-```text
-GitHub Actions
-      |
-      v
-Docker Build
-      |
-      v
+      ↓
+Docker Image
+      ↓
 Amazon ECR
-      |
-      v
+      ↓
 ECS Task Definition
-      |
-      v
-ECS Task
-```
+      ↓
+ECS Fargate
 
-ECR therefore acts as the bridge between the CI/CD build process and ECS runtime.
+Containerization provides reproducible environments, dependency isolation, consistent deployment artifacts, and easier rollback.
 
----
+Infrastructure as Code
 
-# Amazon ECS Fargate
+Terraform is used to manage and validate infrastructure such as:
 
-The ECS cluster contains separate services for:
+ECS
+ECR
+ALB
+Target Groups
+IAM
+Application Auto Scaling
+Terraform state configuration
 
-```text
-securedataops-frontend-service
-securedataops-backend-service
-```
+The normal workflow is:
 
-Fargate manages the underlying compute infrastructure.
-
-The application therefore does not require manually managed EC2 servers.
-
-Verified deployment state:
-
-```text
-Backend:
-Desired  = 1
-Running  = 1
-Pending  = 0
-
-Frontend:
-Desired  = 1
-Running  = 1
-Pending  = 0
-```
-
-Deployments were also verified as:
-
-```text
-Status  = PRIMARY
-Rollout = COMPLETED
-```
-
----
-
-# Application Load Balancers
-
-Two Application Load Balancers are used:
-
-```text
-Frontend ALB
-    |
-    v
-Frontend Target Group
-    |
-    v
-Frontend ECS
-
-
-Backend ALB
-    |
-    v
-Backend Target Group
-    |
-    v
-Backend ECS
-```
-
-Both ALBs are internet-facing.
-
-The backend ALB listener was verified as:
-
-```text
-Port     : 80
-Protocol : HTTP
-Action   : Forward
-```
-
-The listener forwards traffic to the backend target group.
-
-The frontend ALB follows the corresponding frontend target-group path.
-
----
-
-# ALB Health Checks
-
-ALB target health is used to determine whether ECS tasks are healthy enough to receive traffic.
-
-Verified state:
-
-```text
-Backend Target:
-healthy
-
-Frontend Target:
-healthy
-```
-
-This provides an important layer of protection against routing traffic to unhealthy application tasks.
-
----
-
-# Infrastructure as Code
-
-Terraform manages and validates the infrastructure configuration.
-
-Terraform is used for:
-
-* ECS
-* ECR
-* ALB
-* target groups
-* IAM
-* Application Auto Scaling
-* Terraform state configuration
-* infrastructure checks
-
-Some existing infrastructure is referenced through Terraform data sources.
-
-This is intentional where resources are externally managed or already exist.
-
----
-
-# Terraform Lifecycle
-
-The normal infrastructure workflow is:
-
-```text
 Terraform Code
-      |
-      v
+    ↓
 terraform fmt
-      |
-      v
+    ↓
 terraform validate
-      |
-      v
+    ↓
 terraform plan
-      |
-      v
+    ↓
 Review
-      |
-      v
+    ↓
 terraform apply
-      |
-      v
+    ↓
 AWS
-```
+Terraform validation
 
-Terraform state is stored remotely.
 
----
 
-# Terraform State
 
-Terraform state is stored in Amazon S3.
+Terraform State
 
-The state bucket was verified to have:
+Terraform state is stored remotely in Amazon S3.
 
-```text
-Versioning: Enabled
+
+
+
+Verified controls include:
+
+S3 Versioning: Enabled
 Encryption: AES256
-```
+Noncurrent version retention: 365 days
 
-A lifecycle policy was configured for:
+This protects the Terraform state from accidental loss and preserves historical state versions.
 
-```text
-Noncurrent Terraform state versions
-Retention: 365 days
-```
+CI/CD
 
-This provides protection against losing useful historical state versions.
+GitHub Actions automates testing, security validation, Terraform validation, image building, and deployment.
 
----
+Backend CI/CD
 
-# CI/CD Architecture
 
-<!--
-SCREENSHOT:
-docs/images/github-actions-success.png
 
-Show the successful GitHub Actions workflow.
--->
 
-```text
+Frontend CI/CD
+
+
+
+
+Deployment flow
 Developer
-    |
-    v
-GitHub Repository
-    |
-    v
+   ↓
+GitHub
+   ↓
 GitHub Actions
-    |
-    +--------------------+
-    |                    |
-    v                    v
-Application Tests    Security Checks
-    |                    |
-    +---------+----------+
-              |
-              v
-       Terraform Validation
-              |
-              v
-         Docker Build
-              |
-              v
-             ECR
-              |
-              v
-        ECS Deployment
-              |
-              v
-       ALB Health Check
-              |
-              v
-        Running Service
-```
+   ├── Tests
+   ├── pip-audit
+   └── Terraform validation
+   ↓
+Docker Build
+   ↓
+Amazon ECR
+   ↓
+Amazon ECS
+   ↓
+ALB Health Check
+   ↓
+Running Service
+GitHub OIDC and IAM
 
----
+CI/CD uses GitHub OIDC rather than storing long-lived AWS access keys in the repository.
 
-# GitHub OIDC → AWS
-
-GitHub Actions uses OIDC-based AWS authentication.
-
-The flow is:
-
-```text
 GitHub Actions
-      |
-      v
+      ↓
 GitHub OIDC Token
-      |
-      v
+      ↓
 AWS IAM Trust Policy
-      |
-      v
-Terraform / Deployment IAM Role
-      |
-      v
+      ↓
+Deployment / Validation Role
+      ↓
 Temporary AWS Credentials
-      |
-      v
+      ↓
 AWS APIs
-```
 
-This avoids the need to rely on permanent AWS access keys stored directly in the repository workflow.
+This reduces the need for permanent AWS credentials in CI/CD and supports a more secure deployment model.
 
-The IAM role is designed around least-privilege access required by the CI/CD workflow.
+DevSecOps
 
----
+Security is applied across development, CI/CD, and runtime.
 
-# CI/CD Security
+Code
+ ↓
+Tests
+ ↓
+Security Validation
+ ↓
+Terraform Validation
+ ↓
+Docker Build
+ ↓
+ECR
+ ↓
+ECS Runtime
 
-The pipeline performs security-related validation before deployment.
+Security-related controls include:
 
-One important example occurred when `pip-audit` detected known vulnerabilities in an older PyJWT version.
+IAM
+GitHub OIDC
+JWT authorization
+Dependency scanning
+Secure configuration
+RDS encryption
+S3 encryption
+Privacy-aware logging
+Dependency scanning
 
-The dependency was upgraded.
+pip-audit is used to identify vulnerable Python dependencies.
+
+During development, a vulnerable PyJWT version was identified, upgraded, and revalidated.
 
 Final validation:
 
-```text
-Backend tests:
-26 passed
+26 tests passed
+pip-audit: No known vulnerabilities found
 
-Dependency audit:
-No known vulnerabilities found
-```
 
-This demonstrates that dependency security is part of the deployment process rather than a manual afterthought.
 
----
 
-# DevSecOps
+Authentication and Authorization
 
-Security is implemented across multiple layers.
+Privacy-sensitive user endpoints require bearer JWT authorization.
 
-```text
-                 DEVSECOPS
-                     |
-       +-------------+-------------+
-       |             |             |
-       v             v             v
-     Code          CI/CD         Runtime
-       |             |             |
-       v             v             v
-    Testing       pip-audit      JWT
-                               Authorization
-       |             |
-       v             v
-   Code Review    OIDC / IAM
-                     |
-                     v
-                   AWS
-```
+Protected operations include:
 
-Security controls include:
-
-* IAM
-* GitHub OIDC
-* JWT
-* authorization
-* dependency scanning
-* encrypted RDS
-* encrypted S3
-* privacy-safe logging
-* secret management strategy
-* Terraform validation
-
----
-
-# Authentication and Authorization
-
-Privacy-sensitive endpoints are protected by bearer JWT authorization.
-
-Protected endpoints include:
-
-```text
 GET    /api/v1/users/{user_id}
 GET    /api/v1/users/{user_id}/export
 PUT    /api/v1/users/{user_id}
 DELETE /api/v1/users/{user_id}
-```
 
-Tokens must contain:
+JWTs contain claims such as:
 
-```text
 sub
 iss
 aud
 exp
-```
 
-The token subject must correspond to the requested user's UUID.
+Expected authorization behavior:
 
-Expected behavior:
+Missing / invalid / expired token → 401
+Cross-user access               → 403
+Valid authorized request        → Allowed
+Observability
 
-```text
-Missing token
-    ↓
-401 Unauthorized
+The platform uses CloudWatch for logs, metrics, dashboards, and alarms, with SNS for notifications.
 
-Invalid token
-    ↓
-401 Unauthorized
+Application / ECS / ALB
+          ↓
+      CloudWatch
+       ↓      ↓
+     Logs   Alarms
+              ↓
+             SNS
+              ↓
+        Notification
+Logs
 
-Expired token
-    ↓
-401 Unauthorized
 
-Token belongs to another user
-    ↓
-403 Forbidden
 
-JWT configuration missing
-    ↓
-503 Service Unavailable
-```
 
-The application does not currently implement its own complete identity-provider/login system.
+Monitoring dashboard
 
-Token issuance is expected to be handled by a trusted identity system.
 
----
 
-# Secrets Management
 
-Production secrets are not committed to Git.
+Alerting
 
-Configuration examples contain placeholders only.
 
-Sensitive configuration includes:
 
-```text
-DATABASE_URL
-AUTH_JWT_SECRET
-AUTH_JWT_ISSUER
-AUTH_JWT_AUDIENCE
-```
 
-Production values are intended to be provided through approved AWS secret/configuration management.
+This creates an operational path from detection to notification instead of relying only on manual inspection.
 
----
+Auto Scaling
 
-# Observability
+The backend ECS service uses Application Auto Scaling based on ALB request load.
 
-Observability covers:
+Verified configuration
+Configuration	Value
+Minimum capacity	1
+Maximum capacity	3
+Metric	ALBRequestCountPerTarget
+Target	100
+Scale-out cooldown	60 seconds
+Scale-in cooldown	300 seconds
 
-* application logs
-* ECS metrics
-* ALB metrics
-* health checks
-* request IDs
-* CloudWatch alarms
-* SNS notifications
 
-The operational flow is:
 
-```text
-Application
-     |
-     +------ Logs
-     |
-     +------ Metrics
-     |
-     +------ Health
-              |
-              v
-          CloudWatch
-              |
-       +------+------+
-       |             |
-       v             v
-     Logs          Alarms
-                     |
-                     v
-                    SNS
-                     |
-                     v
-                Notification
-```
 
----
 
-# Request IDs
 
-The backend generates/uses request identifiers to help correlate requests across application behavior and operational logs.
 
-Request IDs are validated before being logged.
-
-Privacy-sensitive data is intentionally not placed into request/audit logs unnecessarily.
-
----
-
-# CloudWatch and SNS
-
-CloudWatch is used for monitoring and alarm evaluation.
-
-SNS is used for notifications.
-
-```text
-Metric
-  |
-  v
-CloudWatch Alarm
-  |
-  +---- OK
-  |
-  +---- ALARM
-          |
-          v
-         SNS
-          |
-          v
-      Notification
-```
-
-A CloudWatch alarm notification was successfully tested.
-
-Example alarm:
-
-```text
-SecureDataOps-Backend-High-CPU
-```
-
----
-
-# Auto Scaling
-
-The backend ECS service uses Application Auto Scaling.
-
-Current verified configuration:
-
-| Configuration      |                    Value |
-| ------------------ | -----------------------: |
-| Minimum capacity   |                        1 |
-| Maximum capacity   |                        3 |
-| Metric             | ALBRequestCountPerTarget |
-| Target             |                      100 |
-| Scale-out cooldown |               60 seconds |
-| Scale-in cooldown  |              300 seconds |
-
-Flow:
-
-```text
+Scaling flow
 Incoming Requests
-       |
-       v
+      ↓
 Backend ALB
-       |
-       v
-Requests / Target
-       |
-       v
+      ↓
+ALBRequestCountPerTarget
+      ↓
 Application Auto Scaling
-       |
-       +----------+
-       |          |
-       v          v
-   Scale Out   Scale In
-       |          |
-       v          v
-   ECS Tasks   ECS Tasks
-```
-
-The scaling target is:
-
-```text
-Minimum: 1
-Maximum: 3
-```
-
-Dynamic scale-in and scale-out are enabled.
-
----
-
-# Health Checks
+      ↓
+ECS Tasks
+   ↙       ↘
+Scale Out  Scale In
+Health and Reliability
 
 The backend exposes:
 
-```text
 GET /health
-```
 
-Production verification returned:
+Expected response:
 
-```text
-HTTP/1.1 200 OK
-```
-
-with:
-
-```json
 {
   "status": "healthy"
 }
-```
 
-The backend ALB target was also verified as healthy.
+The production health endpoint and ALB target health were verified.
 
----
+The ALB removes unhealthy targets from normal traffic, while ECS can replace unhealthy tasks.
 
-# Database and Recovery
+Backup and Disaster Recovery
 
-RDS PostgreSQL is a critical stateful component.
+RDS is treated as a critical stateful component.
 
-Verified configuration:
+PostgreSQL RDS
+      ↓
+Automated Backups
+      ↓
+Point-in-Time Recovery
+      ↓
+Isolated Restore
+      ↓
+Validation
+      ↓
+Approved Recovery / Cutover
 
-```text
-Engine:
-PostgreSQL
+The Terraform state has an additional protection layer:
 
-Automated backup retention:
-7 days
+Terraform
+   ↓
+S3
+   ├── Encryption
+   ├── Versioning
+   └── 365-day noncurrent-version retention
 
-Encryption:
-Enabled
+Detailed recovery procedures are maintained in:
 
-Multi-AZ:
-Enabled
+docs/BACKUP-DR.md
 
-Backup window:
-Configured
+DPDP-Oriented Privacy Controls
 
-Latest restorable time:
-Available
-```
+SecureDataOps processes personal data such as:
 
-Automated RDS snapshots were also verified.
+Name
+Email
+Optional phone
+UUID
+Timestamps
 
----
+The project implements engineering controls around the data actually processed by the application.
 
-# Backup and Disaster Recovery
+Privacy operations
+Data Access
+Data Export
+Data Correction
+Data Erasure
 
-The recovery architecture is:
+Protected operations include:
 
-```text
-                    PRODUCTION
-                        |
-              +---------+---------+
-              |                   |
-              v                   v
-             RDS              Terraform
-              |                  State
-              v                   |
-        Automated Backup          v
-              |                  S3
-              v                   |
-       Point-in-Time             Versioning
-          Recovery                 |
-              |                    v
-              v              365-day retention
-      Isolated Restore
-              |
-              v
-         Validation
-              |
-              v
-       Approved Cutover
-```
-
-The database is restored into an isolated environment rather than immediately overwriting the production database.
-
-Detailed recovery procedures are documented in:
-
-`docs/BACKUP-DR.md`
-
----
-
-# RDS Backup Verification
-
-The deployed database was verified with AWS CLI.
-
-Verified:
-
-```text
-Backup retention:     7 days
-Storage encryption:   True
-Multi-AZ:             True
-Backup window:        Configured
-Latest restorable:    Available
-```
-
-Automated snapshots were also available.
-
----
-
-# DPDP-Oriented Data Protection
-
-The application stores personal data including:
-
-* name
-* email
-* optional phone
-* UUID
-* timestamps
-
-The project implements engineering controls around the personal data actually processed by the application.
-
----
-
-## Privacy Operations
-
-The backend supports:
-
-```text
-Data access
-Data export
-Data correction
-Data erasure
-```
-
-The protected export endpoint is:
-
-```text
-GET /api/v1/users/{user_id}/export
-```
-
-Correction:
-
-```text
-PUT /api/v1/users/{user_id}
-```
-
-Erasure:
-
-```text
+GET    /api/v1/users/{user_id}/export
+PUT    /api/v1/users/{user_id}
 DELETE /api/v1/users/{user_id}
-```
 
-These operations are protected by authorization.
+The project also uses:
 
----
-
-# Privacy Audit Logging
-
-Privacy-related operations generate minimal audit events.
-
-Examples include:
-
-```text
-User created
-User accessed
-User list accessed
-User exported
-User corrected
-User erased
-```
-
-The audit events are designed to avoid logging unnecessary personal information.
-
-They do not intentionally record:
-
-* passwords
-* JWT tokens
-* request bodies
-* email addresses
-* phone numbers
-* credentials
-* unnecessary personal data
-
----
-
-# DPDP Scope
-
-The project documents:
-
-* data inventory
-* purpose mapping
-* privacy controls
-* authorization
-* export
-* correction
-* erasure
-* audit logging
-* operational/legal gaps
+Authorization
+Minimal privacy audit events
+Privacy-aware logging
+Reduced logging of unnecessary personal data
+Data inventory and purpose mapping
 
 Detailed documentation:
 
-`docs/DPDP.md`
+docs/DPDP.md
 
-### Important
+Important: SecureDataOps demonstrates DPDP-oriented engineering controls. It is not a legal certification or a claim of complete DPDP compliance. Formal requirements such as lawful basis, notice/consent, retention, grievance handling, identity verification, and organizational procedures require appropriate legal review.
 
-This project implements **DPDP-oriented engineering controls**.
+Incident Management and SRE
 
-It is not a legal certification or a claim of complete legal compliance.
+The project treats operations as a continuous lifecycle:
 
-Formal decisions around:
-
-* lawful basis
-* notice
-* consent
-* retention
-* grievance handling
-* identity verification
-* rights-request procedures
-* organizational responsibilities
-
-require appropriate legal and organizational review.
-
----
-
-# Incident Management
-
-Monitoring is only useful if there is a response process.
-
-The incident lifecycle is:
-
-```text
 Detect
   ↓
 Triage
@@ -1387,597 +1150,79 @@ Recover
   ↓
 Validate
   ↓
-Communicate
-  ↓
 Postmortem
   ↓
 Prevent Recurrence
-```
 
-Documentation:
+Operational documentation:
 
-```text
 docs/incident-management.md
 docs/runbooks.md
-```
-
----
-
-# Example Failure Handling
-
-## Unhealthy ECS Task
-
-```text
-ECS Task
-   |
-   v
-ALB Health Check
-   |
-   v
-Unhealthy
-   |
-   v
-ALB stops routing traffic
-   |
-   v
+docs/slo.md
+Example: unhealthy ECS task
+Task becomes unhealthy
+        ↓
+ALB health check fails
+        ↓
+Traffic removed
+        ↓
 ECS replaces task
-```
-
----
-
-## Increased Traffic
-
-```text
-Traffic Increase
-       |
-       v
-ALB
-       |
-       v
-Request Count / Target
-       |
-       v
-Auto Scaling
-       |
-       v
-Additional ECS Task
-```
-
----
-
-## Vulnerable Dependency
-
-```text
+Example: increased traffic
+Traffic increases
+        ↓
+ALB request count increases
+        ↓
+Auto Scaling threshold reached
+        ↓
+Additional ECS task
+Example: vulnerable dependency
 Dependency
-    |
-    v
+   ↓
 pip-audit
-    |
-    v
+   ↓
 Vulnerability
-    |
-    v
-CI Failure
-    |
-    v
-Upgrade Dependency
-    |
-    v
-Run Tests
-    |
-    v
-Run Security Audit
-    |
-    v
-Successful Pipeline
-```
-
----
-
-## Database Failure
-
-```text
-Database Incident
-       |
-       v
-Identify Recovery Point
-       |
-       v
-Isolated RDS Restore
-       |
-       v
-Application Validation
-       |
-       v
-Approved Cutover
-       |
-       v
-Monitoring
-```
-
----
-
-# SLOs
-
-Service Level Objectives are documented separately.
-
-The SLO documentation covers the operational targets used to reason about service reliability.
-
-See:
-
-`docs/slo.md`
-
----
-
-# Testing
-
-The backend contains automated tests covering:
-
-* application behavior
-* user operations
-* authorization
-* privacy operations
-* database failure behavior
-* observability behavior
-
-Final local validation:
-
-```text
-26 passed
-```
-
----
-
-# Security Validation
-
-Dependency security is continuously checked using:
-
-```text
-pip-audit
-```
-
-Current result:
-
-```text
-No known vulnerabilities found
-```
-
-This check is integrated into the CI/CD process.
-
----
-
-# Operational Verification
-
-The deployed AWS environment was manually verified.
-
-## ECS Services
-
-```text
-Backend:
-ACTIVE
-Desired: 1
-Running: 1
-Pending: 0
-
-Frontend:
-ACTIVE
-Desired: 1
-Running: 1
-Pending: 0
-```
-
-## Deployments
-
-```text
-Status: PRIMARY
-Rollout: COMPLETED
-```
-
-## ALB Target Health
-
-```text
-Backend:  healthy
-Frontend: healthy
-```
-
-## Backend Health
-
-```text
-HTTP 200 OK
-
-{"status":"healthy"}
-```
-
-## Auto Scaling
-
-```text
-Minimum: 1
-Maximum: 3
-Target: 100 ALB requests/target
-```
-
-## RDS
-
-```text
-PostgreSQL
-Backup retention: 7 days
-Encryption: enabled
-Multi-AZ: enabled
-```
-
-## Terraform State
-
-```text
-S3 versioning: enabled
-S3 encryption: enabled
-Noncurrent state retention: 365 days
-```
-
----
-
-# CI/CD Evidence
-
-<!--
-SCREENSHOT
-
-docs/images/github-actions-success.png
-
-Show the successful GitHub Actions workflow.
--->
-
-The final CI/CD pipeline successfully completed after resolving a vulnerable PyJWT dependency.
-
-The pipeline therefore demonstrates:
-
-```text
-Source
-  ↓
-Test
-  ↓
-Security Audit
-  ↓
-Terraform Validation
-  ↓
-Build
-  ↓
-Deploy
-```
-
----
-
-# Screenshots
-
-The README should include selected screenshots as evidence rather than filling the repository with screenshots of every AWS page.
-
-## Application Dashboard
-
-<!--
-docs/images/application-dashboard.png
--->
-
-Show the running application using dummy/non-sensitive user data.
-
----
-
-## AWS VPC / Networking
-
-<!--
-docs/images/vpc-networking.png
--->
-
-Show:
-
-* VPC
-* subnets
-* availability zones
-* relevant network structure
-
----
-
-## ECS Services
-
-<!--
-docs/images/ecs-services.png
--->
-
-Show:
-
-* cluster
-* frontend service
-* backend service
-* running tasks
-
----
-
-## ECS Deployment
-
-<!--
-docs/images/ecs-deployment.png
--->
-
-Show:
-
-* PRIMARY
-* COMPLETED
-* running/desired tasks
-
----
-
-## ALB Target Health
-
-<!--
-docs/images/alb-target-health.png
--->
-
-Show:
-
-* frontend target
-* backend target
-* healthy state
-
----
-
-## GitHub Actions
-
-<!--
-docs/images/github-actions-success.png
--->
-
-Show the successful CI/CD workflow.
-
----
-
-## CloudWatch Alarm
-
-<!--
-docs/images/cloudwatch-alarm.png
--->
-
-Show the configured alarm.
-
----
-
-## SNS Notification
-
-<!--
-docs/images/sns-notification.png
--->
-
-Show the successful alarm notification.
-
-Do not expose private email information.
-
----
-
-## Auto Scaling
-
-<!--
-docs/images/ecs-autoscaling.png
--->
-
-Show:
-
-* minimum capacity
-* maximum capacity
-* target tracking
-* ALBRequestCountPerTarget
-
----
-
-## RDS
-
-<!--
-docs/images/rds-backup.png
--->
-
-Show:
-
-* PostgreSQL
-* Multi-AZ
-* encryption
-* backup retention
-
----
-
-## Terraform State
-
-<!--
-docs/images/terraform-state.png
--->
-
-Show:
-
-* S3 versioning
-* encryption
-* lifecycle policy
-
----
-
-## Health Check
-
-<!--
-docs/images/health-check.png
--->
-
-Show:
-
-```text
-HTTP 200 OK
-{"status":"healthy"}
-```
-
----
-
-# Architecture Diagrams
-
-The repository should contain four primary architecture diagrams.
-
-## 1. Overall AWS Architecture
-
-```text
-Internet
-   |
-   +--------------------+
-   |                    |
-   v                    v
-Frontend ALB          Backend ALB
-   |                    |
-   v                    v
-Frontend ECS          Backend ECS
-                          |
-                          v
-                       RDS
-```
-
-Add the VPC, subnets, security groups, and availability zones around these components in the final visual diagram.
-
-Recommended:
-
-`docs/images/architecture-overview.png`
-
----
-
-## 2. CI/CD Architecture
-
-```text
-Developer
-    |
-    v
-GitHub
-    |
-    v
-GitHub Actions
-    |
-    +---- Tests
-    |
-    +---- Security
-    |
-    +---- Terraform
-    |
-    +---- Docker
-            |
-            v
-           ECR
-            |
-            v
-           ECS
-            |
-            v
-           ALB
-```
-
-Recommended:
-
-`docs/images/cicd-pipeline.png`
-
----
-
-## 3. Security Architecture
-
-```text
-User
- |
- v
-ALB
- |
- v
-Backend
- |
- v
-JWT Authorization
- |
- v
-Application
- |
- v
-RDS
-
-
-GitHub
- |
- v
-OIDC
- |
- v
-IAM
- |
- v
-AWS
-```
-
-Recommended:
-
-`docs/images/security-architecture.png`
-
----
-
-## 4. Backup / DR Architecture
-
-```text
-RDS
- |
- +---- Automated Backups
- |
- +---- PITR
- |
- +---- Multi-AZ
- |
- v
-Isolated Restore
- |
- v
-Validation
- |
- v
-Approved Cutover
-
-
-Terraform
- |
- v
-S3
- |
- +---- Encryption
- |
- +---- Versioning
- |
- v
-365-Day Noncurrent Retention
-```
-
-Recommended:
-
-`docs/images/backup-dr.png`
-
----
-
-# Repository Structure
-
-```text
+   ↓
+CI failure
+   ↓
+Upgrade dependency
+   ↓
+Tests + audit
+   ↓
+Pipeline passes
+Verification
+
+The deployed environment was verified across application, infrastructure, security, and operations.
+
+Area	Verification
+Backend tests	26 passed
+Dependency audit	No known vulnerabilities
+Terraform	Validation passed
+ECS	Services deployed
+ALB	Targets healthy
+Backend health	HTTP 200
+Auto Scaling	Verified
+RDS backups	Verified
+RDS encryption	Enabled
+RDS Multi-AZ	Enabled
+S3 versioning	Enabled
+S3 encryption	Enabled
+S3 lifecycle	365-day retention
+Repository Structure
 secure-data-platform/
 │
 ├── backend/
 │   ├── app/
-│   │   ├── api/
-│   │   ├── core/
-│   │   └── ...
 │   ├── tests/
 │   ├── Dockerfile
 │   └── requirements.txt
 │
 ├── frontend/
 │   ├── src/
-│   ├── public/
 │   ├── Dockerfile
 │   └── ...
 │
 ├── infra/
 │   └── terraform/
-│       ├── resources.tf
-│       ├── variables.tf
-│       ├── data-sources.tf
-│       ├── backup-dr.tf
-│       └── README.md
 │
 ├── docs/
 │   ├── BACKUP-DR.md
@@ -1990,399 +1235,108 @@ secure-data-platform/
 ├── .github/
 │   └── workflows/
 │
-├── README.md
-└── ...
-```
+└── README.md
+Documentation
+Document	Purpose
+docs/DPDP.md	DPDP-oriented privacy controls
+docs/BACKUP-DR.md	Backup and disaster recovery
+docs/incident-management.md	Incident lifecycle
+docs/runbooks.md	Operational troubleshooting
+docs/slo.md	Reliability targets
+infra/terraform/README.md	Infrastructure documentation
+Local Development
+Backend
+cd backend
+python -m venv venv
 
----
+Windows:
 
-# Documentation
+venv\Scripts\activate
 
-Detailed operational documentation is maintained separately.
+Install dependencies:
 
-| Document                      | Purpose                        |
-| ----------------------------- | ------------------------------ |
-| `docs/BACKUP-DR.md`           | Backup and disaster recovery   |
-| `docs/DPDP.md`                | DPDP-oriented privacy controls |
-| `docs/incident-management.md` | Incident lifecycle             |
-| `docs/runbooks.md`            | Operational troubleshooting    |
-| `docs/slo.md`                 | Service Level Objectives       |
-| `infra/terraform/README.md`   | Terraform infrastructure       |
+pip install -r requirements.txt
 
----
+Run:
 
-# Deployment Lifecycle
+uvicorn app.main:app --reload
+Frontend
+cd frontend
+npm install
+npm run dev
+Docker
 
-The complete lifecycle is:
+Backend:
 
-```text
-Developer
-    |
-    v
-GitHub
-    |
-    v
-GitHub Actions
-    |
-    +----------------+
-    |                |
-    v                v
-Testing          Security
-    |                |
-    +-------+--------+
-            |
-            v
-     Terraform Validation
-            |
-            v
-       Docker Build
-            |
-            v
-           ECR
-            |
-            v
-       ECS Fargate
-            |
-            v
-           ALB
-            |
-            v
-       Health Checks
-            |
-            v
-        CloudWatch
-            |
-            v
-          Operate
-            |
-       +----+----+
-       |         |
-       v         v
-   Scaling     Alerts
-       |         |
-       +----+----+
-            |
-            v
-       Recovery
-```
+docker build -t securedataops-backend ./backend
 
----
+Frontend:
 
-# Production Readiness Considerations
+docker build -t securedataops-frontend ./frontend
+Production Readiness Considerations
 
-The project intentionally demonstrates production-oriented engineering practices, but a real enterprise production environment would require additional controls depending on the organization's requirements.
+The project demonstrates production-oriented engineering practices, but a real enterprise deployment may require additional controls depending on business and regulatory requirements.
 
 Potential future improvements include:
 
-* production identity provider integration
-* asymmetric/JWKS-backed JWT validation
-* formal secret rotation
-* TLS/HTTPS everywhere
-* AWS WAF
-* CloudFront where appropriate
-* stronger network isolation
-* private database networking
-* centralized security monitoring
-* formal penetration testing
-* formal disaster-recovery exercises
-* multi-region recovery where required
-* cost monitoring
-* formal compliance/legal review
-* formal retention policies
-* production-grade incident escalation
+Managed enterprise identity provider
+Asymmetric/JWKS-backed JWT validation
+Formal secret rotation
+HTTPS/TLS everywhere
+AWS WAF
+Stronger private-network isolation
+Centralized security monitoring
+Formal penetration testing
+Regular DR restore exercises
+Multi-region recovery where required
+Cost monitoring and optimization
 
-These are documented as future considerations rather than being falsely presented as already implemented.
+These are intentionally presented as future considerations rather than claimed as already implemented.
 
----
+What This Project Demonstrates
+AWS / Cloud
 
-# What This Project Demonstrates
+VPC · Subnets · Security Groups · ALB · ECS Fargate · ECR · RDS · S3 · IAM · CloudWatch · SNS
 
-SecureDataOps demonstrates practical understanding of the following areas:
+DevOps
 
-### Cloud
+Docker · GitHub · GitHub Actions · Terraform · CI/CD · Infrastructure as Code
 
-* AWS VPC
-* subnets
-* security groups
-* ALB
-* ECS
-* Fargate
-* ECR
-* RDS
-* S3
-* CloudWatch
-* SNS
-* IAM
+DevSecOps
 
-### DevOps
+OIDC · IAM · JWT · Authorization · Dependency Scanning · Secure Configuration
 
-* Git
-* GitHub
-* Docker
-* Terraform
-* CI/CD
-* Infrastructure as Code
-* automated deployment
+SRE
 
-### DevSecOps
+Health Checks · Monitoring · Alerting · Auto Scaling · SLOs · Incident Management · Runbooks · Backup/DR
 
-* OIDC
-* IAM
-* JWT
-* authorization
-* dependency scanning
-* secure configuration
-* privacy-safe logging
+Data Protection
 
-### SRE
+Data Inventory · Export · Correction · Erasure · Auditability · DPDP-oriented Controls
 
-* monitoring
-* alerting
-* health checks
-* SLOs
-* auto scaling
-* incident management
-* runbooks
-* backup and recovery
-
-### Data Protection
-
-* personal-data inventory
-* privacy operations
-* data export
-* correction
-* erasure
-* audit events
-* DPDP-oriented controls
-
----
-
-# Lessons Learned
-
-## Deployment is only the beginning
-
-A working deployment is not the same as a production-ready system.
-
----
-
-## Networking matters
-
-The application depends on controlled communication between:
-
-```text
-Internet
-   ↓
-ALB
-   ↓
-ECS
-   ↓
-RDS
-```
-
-VPCs, subnets, routing, and security groups determine how these components communicate.
-
----
-
-## CI/CD should fail safely
-
-The dependency vulnerability discovered by `pip-audit` demonstrated why security checks belong inside the deployment pipeline.
-
----
-
-## Observability must lead to action
-
-Metrics become useful when they result in:
-
-```text
-Metric
- ↓
-Alarm
- ↓
-Notification
- ↓
-Investigation
- ↓
-Runbook
- ↓
-Recovery
-```
-
----
-
-## Scaling requires a measurable signal
-
-The backend uses ALB request count per target instead of arbitrarily scaling based on guesswork.
-
----
-
-## Backups are not enough
-
-A backup strategy is incomplete without a documented restoration procedure and periodic restore testing.
-
----
-
-## Privacy requires engineering controls
-
-DPDP-oriented protection requires more than documentation.
-
-The application also needs:
-
-* authorization
-* controlled access
-* export
-* correction
-* erasure
-* auditability
-* safe logging
-
----
-
-# Project Status
-
-## Application
-
-* [x] React frontend
-* [x] FastAPI backend
-* [x] PostgreSQL
-* [x] CRUD operations
-* [x] Docker
-* [x] Health endpoint
-
-## AWS
-
-* [x] VPC/network integration
-* [x] Subnets
-* [x] Security/network controls
-* [x] Frontend ALB
-* [x] Backend ALB
-* [x] Target groups
-* [x] ECS Fargate
-* [x] ECR
-* [x] RDS PostgreSQL
-* [x] CloudWatch
-* [x] SNS
-* [x] IAM
-* [x] S3 Terraform state
-
-## DevOps
-
-* [x] Terraform
-* [x] GitHub Actions
-* [x] Docker image build
-* [x] ECR deployment
-* [x] ECS deployment
-* [x] GitHub OIDC
-* [x] Infrastructure validation
-
-## SRE
-
-* [x] Health checks
-* [x] Monitoring
-* [x] CloudWatch alarms
-* [x] SNS notifications
-* [x] ECS Auto Scaling
-* [x] SLO documentation
-* [x] Incident management
-* [x] Runbooks
-
-## Security
-
-* [x] IAM
-* [x] GitHub OIDC
-* [x] JWT authorization
-* [x] Dependency vulnerability scanning
-* [x] Secure configuration examples
-* [x] Privacy-aware logging
-* [x] RDS encryption
-* [x] S3 encryption
-
-## Backup / DR
-
-* [x] RDS automated backups
-* [x] 7-day retention
-* [x] RDS encryption
-* [x] Multi-AZ
-* [x] Automated snapshots
-* [x] Terraform state versioning
-* [x] Terraform state encryption
-* [x] 365-day noncurrent state retention
-* [x] Recovery procedure documentation
-
-## DPDP-Oriented Controls
-
-* [x] Data inventory
-* [x] Purpose mapping
-* [x] Data export
-* [x] Data correction
-* [x] Data erasure
-* [x] Authorization
-* [x] Privacy audit events
-* [x] Sensitive-data logging reduction
-* [x] DPDP documentation
-
-## Validation
-
-* [x] Backend tests
-* [x] 26 tests passing
-* [x] Dependency audit
-* [x] No known dependency vulnerabilities
-* [x] Terraform validation
-* [x] ECS deployment verified
-* [x] ALB target health verified
-* [x] Production `/health` verified
-* [x] Auto Scaling verified
-* [x] RDS backup configuration verified
-* [x] S3 versioning verified
-* [x] S3 encryption verified
-* [x] S3 lifecycle policy verified
-
----
-
-# Final Architecture Philosophy
-
-SecureDataOps follows a simple principle:
-
-```text
+Project Philosophy
 Build
-  ↓
+ ↓
 Automate
-  ↓
+ ↓
 Secure
-  ↓
+ ↓
 Deploy
-  ↓
+ ↓
 Observe
-  ↓
+ ↓
 Scale
-  ↓
+ ↓
 Recover
-  ↓
+ ↓
 Improve
-```
 
-The project demonstrates that DevOps is not simply about deploying an application.
+SecureDataOps demonstrates that production-oriented DevOps is not simply about getting an application running. It is about making the system automated, observable, secure, scalable, recoverable, and maintainable.
 
-A production-oriented system must be:
+Author
 
-**automated, observable, secure, scalable, recoverable, and maintainable.**
-
----
-
-# Author
-
-## Rachit Singh Chauhan
+Rachit Singh Chauhan
 
 B.Tech — Computer Science (AI & ML)
 
-Areas of interest:
-
-* DevOps
-* SRE
-* DevSecOps
-* AWS
-* Cloud Infrastructure
-* Infrastructure as Code
-* CI/CD
-* AI/ML Systems
-* Backend Engineering
-* Production Engineering
+Interests: DevOps · SRE · DevSecOps · AWS · Cloud Infrastructure · IaC · CI/CD · AI/ML Systems
